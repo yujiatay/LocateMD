@@ -1,11 +1,9 @@
-matrix:
-  include:
-    - language: node_js
-    node_js: "8"
-    before_script:
-      - cd webapp
-    
-    - language: node_js
-    node_js: "8"
-    before_script:
-      - cd backend
+language: node_js
+node_js: 
+  - 8
+env:
+  - TEST_DIR=backend
+  - TEST_DIR=webapp
+script:
+  - cd $TEST_DIR && npm install && npm test
+      
