@@ -14,12 +14,12 @@ import TestPage from './TestPage';
 import * as routes from '../constants/routes';
 import withAuthentication from './withAuthentication';
 
+import './App.css';
+
 const App = () => (
   <Router>
     <div>
       <Navigation />
-
-      <hr />
 
       <Route exact path={routes.LANDING} component={() => <LandingPage />} />
       <Route exact path={routes.SIGN_UP} component={() => <SignUpPage />} />
