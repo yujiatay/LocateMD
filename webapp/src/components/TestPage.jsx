@@ -14,7 +14,7 @@ class TestPage extends Component {
   onSubmit = event => {
     event.preventDefault();
     this.setState({ message: 'mushimush' });
-  }
+  };
 
   render() {
     const { field1, field2, message } = this.state;
@@ -23,23 +23,17 @@ class TestPage extends Component {
       <form onSubmit={this.onSubmit}>
         <input
           value={field1}
-          onChange={event =>
-            this.setState({ field1 : event.target.value})
-          }
+          onChange={event => this.setState({ field1: event.target.value })}
           type="text"
           placeholder="Field 1"
         />
         <input
           value={field2}
-          onChange={event =>
-            this.setState({ field2 : event.target.value})
-          }
+          onChange={event => this.setState({ field2: event.target.value })}
           type="text"
           placeholder="Field 2"
         />
-        <button type="submit">
-          Submit
-        </button>
+        <button type="submit">Submit</button>
 
         {message && <p>{message}</p>}
       </form>
