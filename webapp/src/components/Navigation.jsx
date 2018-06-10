@@ -52,12 +52,12 @@ class NavigationAuth extends React.Component {
           onCollapse={this.handleChange}
           style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}
         >
-          <div className="logo">
+          <div className="small-logo">
             <img src={SmallLogoPng} alt="Logo"/>
           </div>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
-              <Icon type="pie-chart" />
+              <Icon type="appstore-o" />
               <span className="nav-text">Home</span>
               <Link to={routes.HOME}></Link>
             </Menu.Item>
@@ -71,13 +71,8 @@ class NavigationAuth extends React.Component {
               <span className="nav-text">Test</span>
               <Link to={routes.TEST}></Link>
             </Menu.Item>
-            <Menu.Item key="4">
-              <Icon type="file" />
-              <span className="nav-text">Landing</span>
-              <Link to={routes.LANDING}></Link>
-            </Menu.Item>
-            <Menu.Item key="5" onClick={auth.doSignOut}>
-              <Icon type="logout" />
+            <Menu.Item key="4" onClick={auth.doSignOut}>
+              <Icon type="poweroff" />
               <span className="nav-text">Logout</span>
             </Menu.Item>
           </Menu>
