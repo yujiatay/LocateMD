@@ -1,101 +1,120 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { auth } from '../firebase';
+import { Card, Form, Icon, Input, Button, Checkbox, message } from 'antd';
 
+import { auth } from '../firebase';
 import * as routes from '../constants/routes';
+import './SignUp.css';
+
+const FormItem = Form.Item;
 
 const SignUpPage = ({ history }) => (
-  <div>
-    <h1>SignUp</h1>
-    <SignUpForm history={history} />
+  <div className="sign-up">
+    <Card title="Sign up">
+      <WrappedSignUpForm history={history} />
+    </Card>
   </div>
 );
-
-const INITIAL_STATE = {
-  username: '',
-  email: '',
-  passwordOne: '',
-  passwordTwo: '',
-  error: null
-};
-
-const byPropKey = (propertyName, value) => () => ({
-  [propertyName]: value
-});
 
 class SignUpForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...INITIAL_STATE };
+    this.state = {
+      confirmDirty: false
+    };
   }
 
-  onSubmit = event => {
-    const { username, email, passwordOne } = this.state;
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const { fullname, email, password } = values;
+        const { history } = this.props;
+        auth
+          .doCreateUserWithEmailAndPassword(email, password)
+          .then(authUser => {
+            history.push(routes.HOME);
+          })
+          .catch(error => {
+            message.error(error.message);
+          });
+      }
+    });
+  }
 
-    const { history } = this.props;
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
 
-    auth
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
-      .then(authUser => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.HOME);
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!');
+    } else {
+      callback();
+    }
+  }
 
-    event.preventDefault();
-  };
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  }
 
   render() {
-    const { username, email, passwordOne, passwordTwo, error } = this.state;
-
-    const isInvalid =
-      passwordOne !== passwordTwo ||
-      passwordOne === '' ||
-      email === '' ||
-      username === '';
+    const { getFieldDecorator } = this.props.form;
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          value={username}
-          onChange={event =>
-            this.setState(byPropKey('username', event.target.value))
-          }
-          type="text"
-          placeholder="Full Name"
-        />
-        <input
-          value={email}
-          onChange={event =>
-            this.setState(byPropKey('email', event.target.value))
-          }
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          value={passwordOne}
-          onChange={event =>
-            this.setState(byPropKey('passwordOne', event.target.value))
-          }
-          type="password"
-          placeholder="Password"
-        />
-        <input
-          value={passwordTwo}
-          onChange={event =>
-            this.setState(byPropKey('passwordTwo', event.target.value))
-          }
-          type="password"
-          placeholder="Confirm Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Sign Up
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <Form onSubmit={this.handleSubmit} className="signup-form">
+        <FormItem>
+          {getFieldDecorator('fullname', {
+            rules: [{ required: true, message: 'Please input your name!' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Full Name" />
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('email', {
+            rules: [{
+              type: 'email', message: 'The input is not valid email!',
+            }, {
+              required: true, message: 'Please input your email!',
+            }],
+          })(
+            <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Email" />
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('password', {
+            rules: [{
+              required: true, message: 'Please input your password!',
+            }, {
+              validator: this.validateToNextPassword,
+            }],
+          })(
+            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('confirm', {
+            rules: [{
+              required: true, message: 'Please confirm your password!',
+            }, {
+              validator: this.compareToFirstPassword,
+            }],
+          })(
+            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Confirm Password" onBlur={this.handleConfirmBlur} />
+          )}
+        </FormItem>
+        <FormItem>
+          <Button type="primary" htmlType="submit" className="signup-form-button">
+            Register
+          </Button>
+        </FormItem>
+      </Form>
     );
   }
 }
@@ -104,6 +123,8 @@ const SignUpLink = () => (
   <span>Don't have an account? <Link to={routes.SIGN_UP}>Sign Up</Link></span>
 );
 
+const WrappedSignUpForm = Form.create()(SignUpForm);
+
 export default withRouter(SignUpPage);
 
-export { SignUpForm, SignUpLink };
+export { SignUpLink };
