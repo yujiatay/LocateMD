@@ -55,8 +55,9 @@ class NavigationAuth extends React.Component {
           onCollapse={this.handleChange}
           style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}
         >
-          <div className="small-logo">
-            <img src={SmallLogoPng} alt="Logo"/>
+          <div className="authmenu-logo">
+            { collapsed ? <img className="small" src={SmallLogoPng} alt="Logo"/> 
+                        : <img className="normal" src={LogoPng} alt="Logo" />}
           </div>
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">

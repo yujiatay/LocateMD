@@ -28,8 +28,14 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.small-logo img {
+.authmenu-logo .small {
   display: block;
   margin: 1em auto;
   width: 32px;
+}
+
+.authmenu-logo .normal {
+  display: block;
+  margin: 1em auto;
+  width: 150px;
 }
