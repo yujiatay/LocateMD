@@ -1,54 +1,102 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Affix, Menu, Icon } from 'antd';
+import { Layout, Affix, Menu, Icon } from 'antd';
 
 import SignOutButton from './SignOut';
 import * as routes from '../constants/routes';
 import LogoPng from '../assets/logo_raster_300x59.png';
+import SmallLogoPng from '../assets/favicon_64x64.png';
 import './Navigation.css';
 
-const Navigation = ({ authUser }) => (
-  <div>{authUser ? <NavigationAuth /> : <NavigationNonAuth />}</div>
+const { Sider } = Layout;
+
+const Navigation = ({ authUser, collapsed, onNavChange, onNavStyleChange }) => (
+  <div>
+    {authUser ? <NavigationAuth 
+                  collapsed={collapsed} 
+                  onNavChange={onNavChange}
+                  onNavStyleChange={onNavStyleChange}
+                  /> 
+              : <NavigationNonAuth/>}
+  </div>
 );
 
-const NavigationAuth = () => (
-  <ul>
-    <li>
-      <Link to={routes.LANDING}>Landing</Link>
-    </li>
-    <li>
-      <Link to={routes.HOME}>Home</Link>
-    </li>
-    <li>
-      <Link to={routes.ACCOUNT}>Account</Link>
-    </li>
-    <li>
-      <Link to={routes.TEST}>Test</Link>
-    </li>
-    <li>
-      <SignOutButton />
-    </li>
-  </ul>
-);
+class NavigationAuth extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    this.setStyle(this.props.collapsed);
+  }
+
+  handleChange() {
+    this.props.onNavChange();
+    this.setStyle(!this.props.collapsed);
+  }
+
+  setStyle(state) {
+    const marginLeft = state ? '80px' : '200px';
+    this.props.onNavStyleChange(marginLeft);
+  }
+
+  render() {
+    const collapsed = this.props.collapsed;
+    return (
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={this.handleChange}
+          style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}
+        >
+          <div className="logo">
+            <img src={SmallLogoPng} alt="Logo"/>
+          </div>
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+            <Menu.Item key="1">
+              <Icon type="pie-chart" />
+              <Link to={routes.HOME}>Home</Link>
+            </Menu.Item>
+            <Menu.Item key="2">
+              <Icon type="desktop" />
+              <Link to={routes.ACCOUNT}>Account</Link>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Icon type="file" />
+              <Link to={routes.TEST}>Test</Link>
+            </Menu.Item>
+            <Menu.Item key="4">
+              <Icon type="file" />
+              <Link to={routes.LANDING}>Landing</Link>
+            </Menu.Item>
+            <Menu.Item key="5">
+              <SignOutButton/>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+    );
+  }
+}
 
 const NavigationNonAuth = () => (
   <Affix>
-  <div className="nonauth-menu">
-    <div className="logo">
-      <img src={LogoPng}/>
+    <div className="nonauth-menu">
+      <div className="logo">
+        <img src={LogoPng} alt="Logo"/>
+      </div>
+      <div className="menu-container">
+      <Menu mode="horizontal">
+        <Menu.Item key="landing">
+          <Link to={routes.LANDING}>Home</Link>
+        </Menu.Item>
+        <Menu.Item key="signin">
+          <Link to={routes.SIGN_IN}>Sign In</Link>
+        </Menu.Item>
+      </Menu>
+      </div>
     </div>
-    <div className="menu-container">
-    <Menu mode="horizontal">
-      <Menu.Item key="landing">
-        <Link to={routes.LANDING}>Home</Link>
-      </Menu.Item>
-      <Menu.Item key="signin">
-        <Link to={routes.SIGN_IN}>Sign In</Link>
-      </Menu.Item>
-    </Menu>
-    </div>
-  </div>
   </Affix>
 );
 

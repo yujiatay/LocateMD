@@ -1,5 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import { Layout} from 'antd';
 
 import Navigation from './Navigation';
 import LandingPage from './Landing';
@@ -16,21 +19,56 @@ import withAuthentication from './withAuthentication';
 
 import './App.css';
 
-const App = () => (
-  <Router>
-    <div>
-      <Navigation />
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleNavChange = this.handleNavChange.bind(this);
+    this.handleNavStyle = this.handleNavStyle.bind(this);
+    this.state = {
+      collapsed: true,
+      contentStyle: {}
+    };
+  }
 
-      <Route exact path={routes.LANDING} component={() => <LandingPage />} />
-      <Route exact path={routes.SIGN_UP} component={() => <SignUpPage />} />
-      <Route exact path={routes.SIGN_IN} component={() => <SignInPage />} />
-      <Route exact path={routes.PASSWORD_FORGET} component={() => <PasswordForgetPage />} />
-      <Route exact path={routes.HOME} component={() => <HomePage />} />
-      <Route exact path={routes.ACCOUNT} component={() => <AccountPage />} />
+  handleNavChange() {
+    this.setState(prevState => ({ collapsed: !prevState.collapsed }));
+  }
 
-      <Route exact path={routes.TEST} component={() => <TestPage />} />
-    </div>
-  </Router>
-);
+  handleNavStyle(marginLeft) {
+    const style = Object.assign({}, { marginLeft : marginLeft });
+    this.setState({ contentStyle : style });
+  }
 
-export default withAuthentication(App);
+  render() {
+    const { collapsed, contentStyle } = this.state;
+    return (
+      <Router>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Navigation 
+            collapsed={collapsed} 
+            onNavChange={this.handleNavChange}
+            onNavStyleChange={this.handleNavStyle}
+            />
+          <Layout style={contentStyle}>
+            <Route exact path={routes.HOME} component={() => <HomePage />} />
+            <Route exact path={routes.ACCOUNT} component={() => <AccountPage />} />
+            <Route exact path={routes.TEST} component={() => <TestPage />} />
+            <Route exact path={routes.LANDING} component={() => <LandingPage />} />
+            <Route exact path={routes.SIGN_UP} component={() => <SignUpPage />} />
+            <Route exact path={routes.SIGN_IN} component={() => <SignInPage />} />
+            <Route exact path={routes.PASSWORD_FORGET} component={() => <PasswordForgetPage />} />
+          </Layout>
+        </Layout>
+      </Router>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  authUser: state.sessionState.authUser
+});
+
+export default compose(
+  withAuthentication,
+  connect(mapStateToProps)
+)(App);
