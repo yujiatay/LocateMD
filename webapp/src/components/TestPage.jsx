@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { database } from '../firebase';
 
 class TestPage extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class TestPage extends Component {
   onSubmit = event => {
     event.preventDefault();
     this.setState({ message: 'mushimush' });
+    database.joinQueue(this.state.field1);
   };
 
   render() {
