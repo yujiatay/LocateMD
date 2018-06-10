@@ -1,0 +1,17 @@
+.sign-in .ant-card {
+  max-width: 300px;
+  margin: 10% auto;
+  border-radius: 5px;
+}
+
+.sign-in .ant-card-body {
+  padding: 24px 24px 0 24px;
+}
+
+.login-form-button {
+  width: 100%;
+}
+
+.login-form-forgot {
+  float: right;
+}

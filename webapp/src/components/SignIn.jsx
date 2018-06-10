@@ -1,88 +1,82 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { Card, Form, Icon, Input, Button, Checkbox, message } from 'antd';
 
 import { SignUpLink } from './SignUp';
 import { PasswordForgetLink } from './PasswordForget';
 import { auth } from '../firebase';
 import * as routes from '../constants/routes';
+import './SignIn.css';
+
+const FormItem = Form.Item;
 
 const SignInPage = ({ history }) => (
-  <div>
-    <h1>SignIn</h1>
-    <SignInForm history={history} />
-    <PasswordForgetLink />
-    <SignUpLink />
+  <div className="sign-in">
+    <Card title="Sign In">
+      <WrappedSignInForm history={history} />
+    </Card>
   </div>
 );
 
-const byPropKey = (propertyName, value) => () => ({
-  [propertyName]: value
-});
-
-const INITIAL_STATE = {
-  email: '',
-  password: '',
-  error: null
-};
-
 class SignInForm extends Component {
-  constructor(props) {
-    super(props);
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const { email, password, remember } = values;
+        const { history } = this.props;
 
-    this.state = { ...INITIAL_STATE };
+        auth
+          .doSignInWithEmailAndPassword(email, password)
+          .then(() => {
+            history.push(routes.HOME);
+          })
+          .catch(error => {
+            message.error(error.message);
+          });
+      }
+    });
   }
 
-  onSubmit = event => {
-    const { email, password } = this.state;
-
-    const { history } = this.props;
-
-    auth
-      .doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.HOME);
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
-
-    event.preventDefault();
-  };
-
   render() {
-    const { email, password, error } = this.state;
-
-    const isInvalid = password === '' || email === '';
+    const { getFieldDecorator } = this.props.form;
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          value={email}
-          onChange={event =>
-            this.setState(byPropKey('email', event.target.value))
-          }
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          value={password}
-          onChange={event =>
-            this.setState(byPropKey('password', event.target.value))
-          }
-          type="password"
-          placeholder="Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Sign In
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <Form onSubmit={this.handleSubmit} className="login-form">
+        <FormItem>
+          {getFieldDecorator('email', {
+            rules: [{ required: true, message: 'Please input your username!' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('password', {
+            rules: [{ required: true, message: 'Please input your password!' }],
+          })(
+            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="Password" />
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('remember', {
+            valuePropName: 'checked',
+            initialValue: true,
+          })(
+            <Checkbox>Remember me</Checkbox>
+          )}
+          <div className="login-form-forgot">
+            <PasswordForgetLink/>
+          </div>
+          <Button type="primary" htmlType="submit" className="login-form-button">
+            Log in
+          </Button>
+          <SignUpLink />
+        </FormItem>
+      </Form>
     );
   }
 }
 
-export default withRouter(SignInPage);
+const WrappedSignInForm = Form.create()(SignInForm);
 
-export { SignInForm };
+export default withRouter(SignInPage);
