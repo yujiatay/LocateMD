@@ -19,7 +19,7 @@ const Navigation = ({ authUser, collapsed, onNavChange, onNavStyleChange }) => (
                   onNavChange={onNavChange}
                   onNavStyleChange={onNavStyleChange}
                   /> 
-              : <NavigationNonAuth/>}
+              : <NavigationNonAuth onNavStyleChange={onNavStyleChange}/>}
   </div>
 );
 
@@ -81,25 +81,37 @@ class NavigationAuth extends React.Component {
   }
 }
 
-const NavigationNonAuth = () => (
-  <Affix>
-    <div className="nonauth-menu">
-      <div className="logo">
-        <img src={LogoPng} alt="Logo"/>
-      </div>
-      <div className="menu-container">
-      <Menu mode="horizontal">
-        <Menu.Item key="landing">
-          <Link to={routes.LANDING}>Home</Link>
-        </Menu.Item>
-        <Menu.Item key="signin">
-          <Link to={routes.SIGN_IN}>Sign In</Link>
-        </Menu.Item>
-      </Menu>
-      </div>
-    </div>
-  </Affix>
-);
+class NavigationNonAuth extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.props.onNavStyleChange('0px');
+  }
+
+  render() {
+    return (
+      <Affix>
+        <div className="nonauth-menu">
+          <div className="logo">
+            <img src={LogoPng} alt="Logo"/>
+          </div>
+          <div className="menu-container">
+          <Menu mode="horizontal">
+            <Menu.Item key="landing">
+              <Link to={routes.LANDING}>Home</Link>
+            </Menu.Item>
+            <Menu.Item key="signin">
+              <Link to={routes.SIGN_IN}>Sign In</Link>
+            </Menu.Item>
+          </Menu>
+          </div>
+        </div>
+      </Affix>
+    );
+  }
+}
 
 const mapStateToProps = state => ({
   authUser: state.sessionState.authUser
