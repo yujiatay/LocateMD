@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { compose } from 'recompose';
+import { withRouter, Link } from 'react-router-dom';
 import { Layout, Affix, Menu, Icon } from 'antd';
 
 import * as routes from '../constants/routes';
@@ -12,12 +13,13 @@ import './Navigation.css';
 
 const { Sider } = Layout;
 
-const Navigation = ({ authUser, collapsed, onNavChange, onNavStyleChange }) => (
+const Navigation = ({ authUser, collapsed, onNavChange, onNavStyleChange, history }) => (
   <div>
     {authUser ? <NavigationAuth 
                   collapsed={collapsed} 
                   onNavChange={onNavChange}
                   onNavStyleChange={onNavStyleChange}
+                  history={history}
                   /> 
               : <NavigationNonAuth onNavStyleChange={onNavStyleChange}/>}
   </div>
@@ -31,6 +33,7 @@ class NavigationAuth extends React.Component {
 
   componentDidMount() {
     this.setStyle(this.props.collapsed);
+    this.props.history.push('/home');
   }
 
   handleChange() {
@@ -117,4 +120,4 @@ const mapStateToProps = state => ({
   authUser: state.sessionState.authUser
 });
 
-export default connect(mapStateToProps)(Navigation);
+export default compose(withRouter, connect(mapStateToProps))(Navigation);
