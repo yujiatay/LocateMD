@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Layout, Affix, Menu, Icon } from 'antd';
 
-import SignOutButton from './SignOut';
 import * as routes from '../constants/routes';
+import { auth } from '../firebase';
+
 import LogoPng from '../assets/logo_raster_300x59.png';
 import SmallLogoPng from '../assets/favicon_64x64.png';
 import './Navigation.css';
@@ -57,22 +58,27 @@ class NavigationAuth extends React.Component {
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
               <Icon type="pie-chart" />
-              <Link to={routes.HOME}>Home</Link>
+              <span className="nav-text">Home</span>
+              <Link to={routes.HOME}></Link>
             </Menu.Item>
             <Menu.Item key="2">
               <Icon type="desktop" />
-              <Link to={routes.ACCOUNT}>Account</Link>
+              <span className="nav-text">Account</span>
+              <Link to={routes.ACCOUNT}></Link>
             </Menu.Item>
             <Menu.Item key="3">
               <Icon type="file" />
-              <Link to={routes.TEST}>Test</Link>
+              <span className="nav-text">Test</span>
+              <Link to={routes.TEST}></Link>
             </Menu.Item>
             <Menu.Item key="4">
               <Icon type="file" />
-              <Link to={routes.LANDING}>Landing</Link>
+              <span className="nav-text">Landing</span>
+              <Link to={routes.LANDING}></Link>
             </Menu.Item>
-            <Menu.Item key="5">
-              <SignOutButton/>
+            <Menu.Item key="5" onClick={auth.doSignOut}>
+              <Icon type="logout" />
+              <span className="nav-text">Logout</span>
             </Menu.Item>
           </Menu>
         </Sider>
