@@ -1,70 +1,62 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Card, Form, Icon, Input, Button, message } from 'antd';
 
 import { auth } from '../firebase';
+import './PasswordForget.css';
+
+const FormItem = Form.Item;
 
 const PasswordForgetPage = () => (
-  <div>
-    <h1>PasswordForget</h1>
-    <PasswordForgetForm />
+  <div className="password-forget">
+    <Card title="Password Reset">
+      <WrappedPasswordForgetForm />
+    </Card>
   </div>
 );
 
-const byPropKey = (propertyName, value) => () => ({
-  [propertyName]: value
-});
-
-const INITIAL_STATE = {
-  email: '',
-  error: null
-};
-
 class PasswordForgetForm extends Component {
-  constructor(props) {
-    super(props);
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const { email } = values;
 
-    this.state = { ...INITIAL_STATE };
+        auth
+          .doPasswordReset(email)
+          .then(() => { 
+            message.success('Your password has been reset successfully. Please check your email.');
+          })
+          .catch(error => {
+            message.error(error.message);
+          });
+      }
+    });
   }
 
-  onSubmit = event => {
-    const { email } = this.state;
-
-    auth
-      .doPasswordReset(email)
-      .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-      })
-      .catch(error => {
-        this.setState(byPropKey('error', error));
-      });
-
-    event.preventDefault();
-  };
-
   render() {
-    const { email, error } = this.state;
-
-    const isInvalid = email === '';
+    const { getFieldDecorator } = this.props.form;
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          value={this.state.email}
-          onChange={event =>
-            this.setState(byPropKey('email', event.target.value))
-          }
-          type="text"
-          placeholder="Email Address"
-        />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
-
-        {error && <p>{error.message}</p>}
-      </form>
+      <Form onSubmit={this.handleSubmit} className="password-reset-form">
+        <FormItem>
+          {getFieldDecorator('email', {
+            rules: [{ required: true, message: 'Please input your email!' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Email address" />
+          )}
+        </FormItem>
+        <FormItem>
+          <Button type="primary" htmlType="submit">
+            Reset My Password
+          </Button>
+        </FormItem>
+      </Form>
     );
   }
 }
+
+const WrappedPasswordForgetForm = Form.create()(PasswordForgetForm);
 
 const PasswordForgetLink = () => (
   <Link to="/pw-forget">Forgot Password</Link>
@@ -72,4 +64,4 @@ const PasswordForgetLink = () => (
 
 export default PasswordForgetPage;
 
-export { PasswordForgetForm, PasswordForgetLink };
+export { WrappedPasswordForgetForm, PasswordForgetLink };
