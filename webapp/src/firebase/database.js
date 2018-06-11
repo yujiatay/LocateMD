@@ -32,16 +32,19 @@ export const getInfo = id => {
 };
 
 export const parseAppointmentsForDisplay = data => {
-
-  return Object.keys(data).map(i => {
-    let srcAppt = data[i];
-    let dateTime = new Date(srcAppt.time);
-    return {
-      date: dateTime.getFullYear() + "-" + dateTime.getMonth() + "-" + dateTime.getDate()
-            + " " + dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds(),
-      patient: srcAppt.patient
-    };
-  });
+  if (data != null) {
+    return Object.keys(data).map(i => {
+      let srcAppt = data[i];
+      let dateTime = new Date(srcAppt.time);
+      return {
+        date: dateTime.getFullYear() + "-" + dateTime.getMonth() + "-" + dateTime.getDate()
+              + " " + dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds(),
+        patient: srcAppt.patient
+      };
+    });
+  } else {
+    return null;
+  }
 };
 
 // ADDING APPOINTMENTS
