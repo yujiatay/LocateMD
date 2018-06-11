@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { withRouter, Link } from 'react-router-dom';
-import { Layout, Affix, Menu, Icon } from 'antd';
+import { Layout, Affix, Menu, Icon, Modal, Button } from 'antd';
 
 import * as routes from '../constants/routes';
 import { auth } from '../firebase';
@@ -12,6 +12,7 @@ import SmallLogoPng from '../assets/favicon_64x64.png';
 import './Navigation.css';
 
 const { Sider } = Layout;
+const confirm = Modal.confirm;
 
 const Navigation = ({ authUser, collapsed, onNavChange, onNavStyleChange, history }) => (
   <div>
@@ -46,6 +47,17 @@ class NavigationAuth extends React.Component {
     this.props.onNavStyleChange(marginLeft);
   }
 
+  confirmLogout() {
+    confirm({
+      title: 'Are you sure you want to log out?',
+      content: 'Confirm to log out',
+      onOk() {
+        auth.doSignOut();
+      },
+      onCancel() {},
+    });
+  }
+
   render() {
     const collapsed = this.props.collapsed;
     return (
@@ -75,7 +87,7 @@ class NavigationAuth extends React.Component {
               <span className="nav-text">Test</span>
               <Link to={routes.TEST}></Link>
             </Menu.Item>
-            <Menu.Item key="4" onClick={auth.doSignOut}>
+            <Menu.Item key="4" onClick={this.confirmLogout}>
               <Icon type="poweroff" />
               <span className="nav-text">Logout</span>
             </Menu.Item>
