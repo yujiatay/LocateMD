@@ -7,36 +7,19 @@ import withAuthorization from './withAuthorization';
 import AppointmentTable from './AppointmentTable';
 import AppointmentCalendar from './AppointmentCalendar';
 import './Appointments.css';
+import { auth, database, firebase } from '../firebase';
 
 const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
-
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}, {
-  key: '4',
-  name: 'Jim Red',
-  age: 32,
-  address: 'London No. 2 Lake Park',
-}];
 
 class AppointmentsPage extends React.Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
+    this.appointmentsRef = firebase.database.ref('appointmentsclinic/' + this.props.authUser.uid);
+    this.state = {
+      data: []
+    }
   }
 
   onChange(pagination, filters, sorter) {
@@ -53,7 +36,7 @@ class AppointmentsPage extends React.Component {
           <Content>
             <Tabs defaultActiveKey="1">
               <TabPane tab={<span><Icon type="table" />Table</span>} key="1">
-                <AppointmentTable data={data} onChange={this.onChange} />
+                <AppointmentTable data={this.state.data} onChange={this.onChange} />
               </TabPane>
               <TabPane tab={<span><Icon type="calendar" />Calendar</span>} key="2">
                 <AppointmentCalendar />
@@ -64,7 +47,26 @@ class AppointmentsPage extends React.Component {
       </div>
     );
   }
+
+  componentDidMount() {
+    this.appointmentsRef.on("value", (snapshot) => {
+      let newData = snapshot.val();
+      console.log(newData);
+      this.setState({
+        data: database.parseAppointmentsForDisplay(newData)
+      })
+      console.log(this.state.data);
+    }, function(error) {
+      console.log(error);
+    });
+  }
+  componentWillUnmount() {
+    this.appointmentsRef.off();
+  }
 }
+
+
+
 
 const mapStateToProps = state => ({
   authUser: state.sessionState.authUser

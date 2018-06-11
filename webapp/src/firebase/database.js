@@ -15,6 +15,8 @@ export const updateInfo = (id, email, contactNumber = '') =>
     }
   );
 
+// GETTING DATA
+
 export const getInfo = id => {
 
   if (id === undefined) {
@@ -28,6 +30,21 @@ export const getInfo = id => {
     return snapshot.val();
   });
 };
+
+export const parseAppointmentsForDisplay = data => {
+
+  return Object.keys(data).map(i => {
+    let srcAppt = data[i];
+    let dateTime = new Date(srcAppt.time);
+    return {
+      date: dateTime.getFullYear() + "-" + dateTime.getMonth() + "-" + dateTime.getDate()
+            + " " + dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds(),
+      patient: srcAppt.patient
+    };
+  });
+};
+
+// ADDING APPOINTMENTS
 
 export const addAppointment = (timestamp, patientID) => {
   let clinicID = auth.currentUser.uid;

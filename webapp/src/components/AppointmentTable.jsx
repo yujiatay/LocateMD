@@ -3,20 +3,17 @@ import React from 'react';
 import { Table } from 'antd';
 
 const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
+  title: 'Date',
+  dataIndex: 'date',
   // specify the condition of filtering result
   // here is that finding the name started with `value`
-  sorter: (a, b) => a.name.length - b.name.length,
+  defaultSortOrder: 'ascend',
+  sorter: (a, b) => ("" + a).localeCompare(b.date),
 }, {
-  title: 'Age',
-  dataIndex: 'age',
+  title: 'Patient',
+  dataIndex: 'patient',
   defaultSortOrder: 'descend',
-  sorter: (a, b) => a.age - b.age,
-}, {
-  title: 'Address',
-  dataIndex: 'address',
-  sorter: (a, b) => a.address.length - b.address.length,
+  // sorter: (a, b) => a.age - b.age,
 }];
 
 const AppointmentTable = ({ data, onChange }) => (
