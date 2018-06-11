@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Card, Form, Icon, Input, Button, Checkbox, message } from 'antd';
+import { Card, Form, Icon, Input, Button, message } from 'antd';
 
 import { auth } from '../firebase';
 import * as routes from '../constants/routes';
