@@ -16,4 +16,9 @@
   </a>
 </p>
 
-<h4 align="center">Coming soon</h4>
+### Orbital Links
+
+- [Milestone I](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-I)
+- Milestone II
+- Milestone III
+- [Project Log](https://github.com/yujiatay/LocateMD/wiki/Project-Log)
