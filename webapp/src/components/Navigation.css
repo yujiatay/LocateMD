@@ -28,14 +28,28 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.authmenu-logo .small {
+.authmenu .logo .small {
   display: block;
   margin: 1em auto;
   width: 32px;
 }
 
-.authmenu-logo .normal {
+.authmenu .logo .normal {
   display: block;
   margin: 1em auto;
   width: 150px;
+}
+
+.authmenu .ant-layout-sider {
+  background: #fff;
+  box-shadow: 2px 0px 4px rgba(0,0,0,0.2);
+  overflow: 'auto';
+  height: '100vh'; 
+  position: 'fixed'; 
+  left: 0;
+}
+
+.authmenu .ant-layout-sider-trigger {
+  background-color: #fff;
+  color: #002140;
 }

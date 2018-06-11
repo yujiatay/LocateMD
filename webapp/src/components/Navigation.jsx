@@ -49,17 +49,17 @@ class NavigationAuth extends React.Component {
   render() {
     const collapsed = this.props.collapsed;
     return (
+      <div className="authmenu">
         <Sider
           collapsible
           collapsed={collapsed}
           onCollapse={this.handleChange}
-          style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}
         >
-          <div className="authmenu-logo">
+          <div className="logo">
             { collapsed ? <img className="small" src={SmallLogoPng} alt="Logo"/> 
                         : <img className="normal" src={LogoPng} alt="Logo" />}
           </div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+          <Menu defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
               <Icon type="appstore-o" />
               <span className="nav-text">Home</span>
@@ -86,6 +86,7 @@ class NavigationAuth extends React.Component {
             </Menu.Item>
           </Menu>
         </Sider>
+      </div>
     );
   }
 }
