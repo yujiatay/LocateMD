@@ -43,9 +43,9 @@
 .authmenu .ant-layout-sider {
   background: #fff;
   box-shadow: 2px 0px 4px rgba(0,0,0,0.2);
-  overflow: 'auto';
-  height: '100vh'; 
-  position: 'fixed'; 
+  overflow: auto;
+  height: 100vh; 
+  position: fixed; 
   left: 0;
 }
 
