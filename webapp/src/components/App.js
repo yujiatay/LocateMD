@@ -11,6 +11,7 @@ import SignInPage from './SignIn';
 import PasswordForgetPage from './PasswordForget';
 import HomePage from './Home';
 import AccountPage from './Account';
+import AppointmentsPage from './Appointments';
 
 import TestPage from './TestPage';
 
@@ -52,6 +53,7 @@ class App extends React.Component {
           <Layout style={contentStyle}>
             <Route exact path={routes.HOME} component={() => <HomePage />} />
             <Route exact path={routes.ACCOUNT} component={() => <AccountPage />} />
+            <Route exact path={routes.APPOINTMENTS} component={() => <AppointmentsPage />} />
             <Route exact path={routes.TEST} component={() => <TestPage />} />
             <Route exact path={routes.LANDING} component={() => <LandingPage />} />
             <Route exact path={routes.SIGN_UP} component={() => <SignUpPage />} />

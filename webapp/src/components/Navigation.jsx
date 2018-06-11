@@ -67,15 +67,20 @@ class NavigationAuth extends React.Component {
             </Menu.Item>
             <Menu.Item key="2">
               <Icon type="desktop" />
+              <span className="nav-text">Appointments</span>
+              <Link to={routes.APPOINTMENTS}></Link>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Icon type="desktop" />
               <span className="nav-text">Account</span>
               <Link to={routes.ACCOUNT}></Link>
             </Menu.Item>
-            <Menu.Item key="3">
+            <Menu.Item key="4">
               <Icon type="file" />
               <span className="nav-text">Test</span>
               <Link to={routes.TEST}></Link>
             </Menu.Item>
-            <Menu.Item key="4" onClick={auth.doSignOut}>
+            <Menu.Item key="5" onClick={auth.doSignOut}>
               <Icon type="poweroff" />
               <span className="nav-text">Logout</span>
             </Menu.Item>
