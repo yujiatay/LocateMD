@@ -1,0 +1,16 @@
+.home .ant-layout-header {
+  background-color: #f0f2f5;
+}
+
+.home .ant-layout-header p {
+  font-size: 2rem;
+}
+
+.home .ant-layout-content {
+  margin: 0 16px;
+}
+
+.home .ant-card .big-number {
+  font-size: 2rem;
+  margin-bottom: 0;
+}
