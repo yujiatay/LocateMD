@@ -52,14 +52,14 @@ export const parseAppointmentsForDisplay = data => {
 export const addAppointment = (timestamp, patientID) => {
   let clinicID = auth.currentUser.uid;
   let clinicRef = database.ref('appointmentsclinic/' + clinicID).push();
-  let patientRef = database.ref('appointmentspatient/' + patientID).push();
+  // let patientRef = database.ref('appointmentspatient/' + patientID).push();
   let newAppointment = {
     clinic: clinicID,
     patient: patientID,
     time: timestamp
   };
   clinicRef.set(newAppointment);
-  patientRef.set(newAppointment);
+  // patientRef.set(newAppointment);
 };
 
 export const joinQueue = (patientID) => {
