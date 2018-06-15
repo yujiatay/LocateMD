@@ -56,7 +56,8 @@ export const addAppointment = (timestamp, patientID) => {
   let newAppointment = {
     clinic: clinicID,
     patient: patientID,
-    time: timestamp
+    time: timestamp,
+    isBooking: true
   };
   clinicRef.set(newAppointment);
   // patientRef.set(newAppointment);
@@ -69,15 +70,17 @@ export const joinQueue = (patientID) => {
   let patientRef = database.ref('appointmentspatient/' + patientID).push();
   let clinicRef = database.ref('clinics/' + clinicID);
   database.ref('clinics/' + clinicID).once('value').then(function(snapshot) {
-    let prevTime = (snapshot.val() && snapshot.val().lastStamp) || Date.now();
+    let estimatedAppointmentTime = (snapshot.val() && snapshot.val().lastStamp) + estimatedWaitTime || Date.now();
+    estimatedAppointmentTime = (estimatedAppointmentTime < Date.now()) ? Date.now() : estimatedAppointmentTime;
     let newAppointment = {
       clinic: clinicID,
       patient: patientID,
-      time: prevTime + estimatedWaitTime
+      time: estimatedAppointmentTime,
+      isBooking: false
     }
     clinicApptRef.set(newAppointment);
     patientRef.set(newAppointment);
-    clinicRef.update({lastStamp: prevTime + estimatedWaitTime});
+    clinicRef.update({lastStamp: estimatedAppointmentTime});
   });
 
 };
