@@ -1,5 +1,7 @@
 {
   "expo": {
+    "name": "LocateMD",
+    "description": "A booking app for your healthcare appointments",
     "sdkVersion": "27.0.0"
   }
 }
