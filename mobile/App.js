@@ -1,20 +1,23 @@
 import React from 'react';
-import { SwitchNavigator } from 'react-navigation';
+import { AppRegistry } from 'react-native';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
 
-import Loading from './src/components/Loading'
-import SignUp from './src/components/SignUp'
-import Login from './src/components/Login'
-import Main from './src/components/Main'
+import AppReducer from './src/reducers';
+import { AppNavigator, middleware } from './src/navigators/AppNavigator';
 
-const App = SwitchNavigator(
-  {
-    Loading,
-    SignUp,
-    Login,
-    Main
-  },
-  {
-    initialRouteName: 'Loading'
+const store = createStore(AppReducer, applyMiddleware(middleware));
+
+class App extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <AppNavigator />
+      </Provider>
+    );
   }
-)
-export default App
+}
+
+AppRegistry.registerComponent('App', () => App);
+
+export default App;
