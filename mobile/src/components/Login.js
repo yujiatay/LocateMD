@@ -1,14 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import { auth } from '../firebase';
+import { NavigationActions } from 'react-navigation';
+
 
 export default class Login extends React.Component {
-  state = { email: '', password: '', errorMessage: null }
+  constructor(props) {
+    super(props);
+    this.state = { email: '', password: '', errorMessage: null }
+  }
+
   handleLogin = () => {
     const { email, password } = this.state;
     auth
       .doSignInWithEmailAndPassword(email, password)
-      .then(() => this.props.navigation.navigate('Main'))
+      .then(() => {
+        this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Main' }))
+      })
       .catch(error => this.setState({ errorMessage: error.message }))
   }
   render() {
@@ -37,7 +45,7 @@ export default class Login extends React.Component {
         <Button title="Login" onPress={this.handleLogin} />
         <Button
           title="Don't have an account? Sign Up"
-          onPress={() => this.props.navigation.navigate('SignUp')}
+          onPress={() => this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'SignUp'}))}
         />
       </View>
     )

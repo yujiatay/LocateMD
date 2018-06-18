@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
 import AppReducer from './src/reducers';
-import { AppNavigator, middleware } from './src/navigators/AppNavigator';
+import { middleware } from './src/navigators/AppNavigator';
+import WrappedAuthNavigator from './src/components/WrappedAuthNavigator';
 
 const store = createStore(AppReducer, applyMiddleware(middleware));
 
@@ -12,7 +13,7 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <AppNavigator />
+        <WrappedAuthNavigator />
       </Provider>
     );
   }

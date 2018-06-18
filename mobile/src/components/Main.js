@@ -1,24 +1,32 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, Text, View } from 'react-native';
-import { firebase } from '../firebase';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import withAuthorization from './withAuthorization';
 
-export default class Main extends React.Component {
-  state = { currentUser: null }
-  componentDidMount() {
-    const { currentUser } = firebase.auth;
-    this.setState({ currentUser });
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
   }
   render() {
-      const { currentUser } = this.state;
-  return (
+    const user = this.props.authUser;
+    return (
       <View style={styles.container}>
         <Text>
-          Hi {currentUser && currentUser.email}!
+          Hi {user.email}!
         </Text>
       </View>
     )
   }
 }
+
+const mapStateToProps = state => ({
+  authUser: state.sessionState.authUser
+});
+
+const authCondition = authUser => !!authUser;
+
+export default compose(withAuthorization(authCondition), connect(mapStateToProps))(Main);
 
 const styles = StyleSheet.create({
   container: {

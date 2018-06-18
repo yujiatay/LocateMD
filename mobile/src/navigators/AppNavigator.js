@@ -5,10 +5,12 @@ import {
   reduxifyNavigator, 
   createReactNavigationReduxMiddleware, 
 } from 'react-navigation-redux-helpers'; 
+import { compose } from 'recompose';
  
-import LoginScreen from '../components/LoginScreen'; 
-import MainScreen from '../components/MainScreen'; 
-import ProfileScreen from '../components/ProfileScreen'; 
+import Login from '../components/Login';
+import Main from '../components/Main';
+import SignUp from '../components/SignUp';
+import withAuthentication from '../components/withAuthentication';
  
 const middleware = createReactNavigationReduxMiddleware( 
   'root', 
@@ -16,15 +18,17 @@ const middleware = createReactNavigationReduxMiddleware(
 ); 
  
 const RootNavigator = createStackNavigator({ 
-  Login: { screen: LoginScreen }, 
-  Main: { screen: MainScreen }, 
-  Profile: { screen: ProfileScreen }, 
+  Login: { screen: Login }, 
+  Main: { screen: Main }, 
+  SignUp: { screen: SignUp }, 
+}, {
+  initialRouteName: 'Login'
 }); 
  
 const AppWithNavigationState = reduxifyNavigator(RootNavigator, 'root'); 
  
 const mapStateToProps = state => ({ 
-  state: state.nav, 
+  state: state.nav
 }); 
  
 const AppNavigator = connect(mapStateToProps)(AppWithNavigationState); 
