@@ -43,29 +43,54 @@ exports.updateRealTimeEstimates = functions.database.ref("appointmentsclinic/{ui
   let clinicRef = admin.database().ref("clinics/" + appt.clinic);
   // TODO: possible cleanup on old booking slots
   if (!appt.isBooking) {
-    // TODO: updatePossibleNextEstimate (looking through booked list), using transactions to track last timing
     clinicRef.transaction((clinic) => {
       if (clinic) {
-          // Set initial expected endtime,
-          var startTime = clinic.nextEstimate;
-          var endTime = clinic.nextEstimate + clinic.estimatedServiceTime;
-          // In form of a json object, key: startime, value: endtime
-          let bookingList = clinic.bookedSlots;
+        // Obtain current slot times
+        let startTime = clinic.nextEstimate;
+        let endTime = startTime + clinic.estimatedServiceTime;
+
+        // In form of a json object, key: starttime, value: endtime
+        let bookingList = clinic.bookedSlots;
+        // Likely to cause problems if estimate is >3 hours (conflict with booking slots)
+        // Check if estimatedStartTime is accurate
+        if (clinic.hasOwnProperty('nextEstimate') && clinic.nextEstimate !== null &&
+          clinic.nextEstimate < (Date.now() - 60000)) {
+          // estimate is inaccurate, obtain better estimate from current time
+          startTime = Date.now();
+          endTime = startTime + clinic.estimatedServiceTime;
           // Get next timing after booked bookedSlots
           Object.keys(bookingList)
-                .sort()
-                .forEach((key) => {
-                  // The additional = in comparisons intended to resolve exact overlap
-                  // Booked appointment before queue and ends after startTime or
-                  // Booked appointment after queue but starts before endTime,
-                  // Push queue to after booked appointment
-                  if ((key <= startTime && bookingList[key] >= startTime) ||
-                      (key >= startTime && key <= endTime)) {
-                    startTime = bookingList[key];
-                    endTime = bookingList[key] + clinic.estimatedServiceTime;
-                  }
-                });
-          clinic.nextEstimate = endTime;
+          .sort()
+          .forEach((key) => {
+            // The additional = in comparisons intended to resolve exact overlap
+            // If start of queue time is between booked appointment start and end or
+            // end of queue time is between booked appointment start and end,
+            // Push queue to after booked appointment
+            if ((key >= startTime && key < endTime) ||
+              (bookingList[key] > startTime && bookingList[key] <= endTime)) {
+              startTime = bookingList[key];
+              endTime = bookingList[key] + clinic.estimatedServiceTime;
+            }
+          });
+        }
+
+        // Obtain next slot (resolving for booking) after current queue
+        let nextStartTime = endTime;
+        let nextEndTime = endTime + clinic.estimatedServiceTime;
+        Object.keys(bookingList)
+        .sort()
+        .forEach((key) => {
+          // The additional = in comparisons intended to resolve exact overlap
+          // If start of queue time is between booked appointment start and end or
+          // end of queue time is between booked appointment start and end,
+          // Push queue to after booked appointment
+          if ((key >= nextStartTime && key < nextEndTime) ||
+            (bookingList[key] > nextStartTime && bookingList[key] <= nextEndTime)) {
+            nextStartTime = bookingList[key];
+            nextEndTime = bookingList[key] + clinic.estimatedServiceTime;
+          }
+        });
+        clinic.nextEstimate = nextStartTime;
       }
       appt.startTime = startTime;
       appt.endTime = endTime;
@@ -73,12 +98,14 @@ exports.updateRealTimeEstimates = functions.database.ref("appointmentsclinic/{ui
       return clinic;
     });
   } else {
+    // TODO: check with realtime queue if it passes 3 hour mark
     let newBooking = {};
     newBooking[appt.startTime] = appt.endTime;
     admin.database().ref("clinics/" + appt.clinic + "/bookedSlots").update(newBooking);
   }
 });
 
+// TODO: http request for client to call and update estimate on clinic
 
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
