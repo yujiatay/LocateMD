@@ -8,16 +8,17 @@ admin.initializeApp();
 
 
 // TODO: Check if really necessary (alot cheaper without)
-exports.syncAppointment = functions.database.ref("appointmentsclinic/{uid}/{entry}").onWrite((change) => {
+exports.syncAppointment = functions.database.ref("appointmentsclinic/{uid}/{entry}").onWrite((change, context) => {
   let snapshot = {};
   let patientUID = "";
+  console.log(context);
   if (!change.before.exists()) {
     // Create operation
-    snapshot = change.after;
+    snapshot = change.after.val();
     patientUID = change.after.val().patient;
   } else if (!change.after.exists()) {
     // Delete operation
-    snapshot = change.after;
+    snapshot = change.after.val();
     patientUID = change.before.val().patient;
   } else {
     let beforeUID = change.before.val().patient;
@@ -26,34 +27,37 @@ exports.syncAppointment = functions.database.ref("appointmentsclinic/{uid}/{entr
     // Update operation (same patientUID)
     if (beforeUID === afterUID) {
       patientUID = afterUID;
-      snapshot = change.after;
+      snapshot = change.after.val();
     } else {
       patientUID = afterUID;
-      snapshot = change.after;
-      admin.database().ref("appointmentspatient/" + beforeUID).update(null);
+      snapshot = change.after.val();
+      admin.database().ref("appointmentspatient/" + context.params.uid + "/" + context.params.entry).update(null);
     }
   }
-
+  console.log("DUPE DATA");
+  console.log(snapshot);
+  console.log(patientUID);
   return admin.database().ref("appointmentspatient/" + patientUID).update(snapshot);
 });
 
 // Function for joining queue, to determine the next queue time, correlate with advance booking slots with buffer
-exports.updateRealTimeEstimates = functions.database.ref("appointmentsclinic/{uid}/{entry}").onCreate((snapshot) => {
+exports.updateRealTimeEstimates = functions.database.ref("appointmentsclinic/{uid}/{entry}").onCreate((snapshot, context) => {
   const appt = snapshot.val();
   let clinicRef = admin.database().ref("clinics/" + appt.clinic);
   // TODO: possible cleanup on old booking slots
   if (!appt.isBooking) {
-    clinicRef.transaction((clinic) => {
+    return clinicRef.transaction((clinic) => {
       if (clinic) {
         // Obtain current slot times
         let startTime = clinic.nextEstimate;
+        if (!clinic.hasOwnProperty('bookedSlots') || clinic.estimatedServiceTime === null) clinic.estimatedServiceTime = 600000;
         let endTime = startTime + clinic.estimatedServiceTime;
 
         // In form of a json object, key: starttime, value: endtime
-        let bookingList = clinic.bookedSlots;
+        let bookingList = (!clinic.hasOwnProperty('bookedSlots') || clinic.bookedSlots === null) ? {} : clinic.bookedSlots;
         // Likely to cause problems if estimate is >3 hours (conflict with booking slots)
         // Check if estimatedStartTime is accurate
-        if (clinic.hasOwnProperty('nextEstimate') && clinic.nextEstimate !== null &&
+        if (!clinic.hasOwnProperty('nextEstimate') || clinic.nextEstimate === null ||
           clinic.nextEstimate < (Date.now() - 60000)) {
           // estimate is inaccurate, obtain better estimate from current time
           startTime = Date.now();
@@ -90,23 +94,72 @@ exports.updateRealTimeEstimates = functions.database.ref("appointmentsclinic/{ui
             nextEndTime = bookingList[key] + clinic.estimatedServiceTime;
           }
         });
+        // TODO: GIVE NEGATIVE NUMBER IF MORE THAN BOOKING THRESHOLD
         clinic.nextEstimate = nextStartTime;
+        appt.startTime = startTime;
+        appt.endTime = endTime;
+        admin.database().ref("appointmentsclinic/" + context.params.uid + "/" + context.params.entry).update(appt);
+        return clinic;
       }
-      appt.startTime = startTime;
-      appt.endTime = endTime;
-      admin.database().ref("appointmentsclinic/" + appt.clinic).update(appt);
-      return clinic;
+      return {};
     });
   } else {
     // TODO: check with realtime queue if it passes 3 hour mark
     let newBooking = {};
     newBooking[appt.startTime] = appt.endTime;
-    admin.database().ref("clinics/" + appt.clinic + "/bookedSlots").update(newBooking);
+    return admin.database().ref("clinics/" + appt.clinic + "/bookedSlots").update(newBooking);
   }
 });
 
-// TODO: http request for client to call and update estimate on clinic
 
+exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
+  console.log(req.query.clinicID);
+  let clinicRef = admin.database().ref("clinics/" + req.query.clinicID);
+  clinicRef.transaction((clinic) => {
+    console.log(clinic);
+    if (clinic) {
+      console.log("IN LOOP");
+      // Obtain current slot times
+      let startTime = clinic.nextEstimate;
+      if (!clinic.hasOwnProperty('bookedSlots') || clinic.estimatedServiceTime === null) clinic.estimatedServiceTime = 600000;
+      let endTime = startTime + clinic.estimatedServiceTime;
+
+      // In form of a json object, key: starttime, value: endtime
+      let bookingList = (!clinic.hasOwnProperty('bookedSlots') || clinic.bookedSlots === null) ? {} : clinic.bookedSlots;
+      // Likely to cause problems if estimate is >3 hours (conflict with booking slots)
+      // Check if estimatedStartTime is accurate
+      if (!clinic.hasOwnProperty('nextEstimate') || clinic.nextEstimate === null ||
+        clinic.nextEstimate < (Date.now() - 60000)) {
+        // estimate is inaccurate, obtain better estimate from current time
+        startTime = Date.now();
+        endTime = startTime + clinic.estimatedServiceTime;
+        // Get next timing after booked bookedSlots
+        console.log(bookingList);
+        Object.keys(bookingList)
+        .sort()
+        .forEach((key) => {
+          // The additional = in comparisons intended to resolve exact overlap
+          // If start of queue time is between booked appointment start and end or
+          // end of queue time is between booked appointment start and end,
+          // Push queue to after booked appointment
+          if ((key >= startTime && key < endTime) ||
+            (bookingList[key] > startTime && bookingList[key] <= endTime)) {
+            startTime = bookingList[key];
+            endTime = bookingList[key] + clinic.estimatedServiceTime;
+          }
+        });
+      }
+
+      // TODO: GIVE NEGATIVE NUMBER IF MORE THAN BOOKING THRESHOLD
+      clinic.nextEstimate = startTime;
+      console.log("AMENDED");
+      console.log(clinic);
+      return clinic;
+    }
+    return {};
+  });
+  res.send("DONE");
+});
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });
