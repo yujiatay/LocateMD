@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
@@ -11,7 +10,7 @@ const mapStateToProps = state => ({
 });
 
 const WrappedAuthNavigator = () => (
-    <AppNavigator />
+    <AppNavigator/>
 );
 
 export default compose(withAuthentication, connect(mapStateToProps))(WrappedAuthNavigator);

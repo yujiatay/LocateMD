@@ -1,24 +1,26 @@
 import React from 'react';
 import { AppRegistry } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-
-import AppReducer from './src/reducers';
-import { middleware } from './src/navigators/AppNavigator';
+import { PersistGate } from 'redux-persist/integration/react';
 import WrappedAuthNavigator from './src/components/WrappedAuthNavigator';
+import configureStore from './src/reducers/configureStore';
 
-const store = createStore(AppReducer, applyMiddleware(middleware));
+console.ignoredYellowBox = [
+  'Setting a timer'
+];
 
+const { store, persistor } = configureStore();
 class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <WrappedAuthNavigator />
+        <PersistGate loading={null} persistor={persistor}>
+          <WrappedAuthNavigator />
+        </PersistGate>
       </Provider>
     );
   }
 }
 
-AppRegistry.registerComponent('App', () => App);
-
 export default App;
+AppRegistry.registerComponent('LocateMD', () => App);

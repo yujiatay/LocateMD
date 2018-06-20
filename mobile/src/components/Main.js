@@ -1,20 +1,37 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, Text, View } from 'react-native';
+import { DrawerActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import withAuthorization from './withAuthorization';
+import { MapView } from "expo";
+import Icon from 'react-native-vector-icons/Feather';
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      mapRegion: {
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      }
+    };
   }
+
+  _handleMapRegionChange = mapRegion => {
+    this.setState({ mapRegion });
+  };
+
   render() {
-    const user = this.props.authUser;
     return (
       <View style={styles.container}>
-        <Text>
-          Hi {user.email}!
-        </Text>
+        <MapView
+          style={{ alignSelf: 'stretch', flex: 1 }}
+          region={this.state.mapRegion}
+          onRegionChange={this._handleMapRegionChange}
+        />
       </View>
     )
   }

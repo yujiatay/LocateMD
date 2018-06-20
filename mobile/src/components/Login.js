@@ -9,13 +9,17 @@ export default class Login extends React.Component {
     super(props);
     this.state = { email: '', password: '', errorMessage: null }
   }
-
+  componentDidMount() {
+    if (this.props.authUser) {
+      this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'MainNav' }))
+    }
+  }
   handleLogin = () => {
     const { email, password } = this.state;
     auth
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
-        this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Main' }))
+        this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'MainNav' }))
       })
       .catch(error => this.setState({ errorMessage: error.message }))
   }
@@ -51,6 +55,10 @@ export default class Login extends React.Component {
     )
   }
 }
+
+Login.navigationOptions = {
+  headerLeft: null
+};
 
 const styles = StyleSheet.create({
   container: {

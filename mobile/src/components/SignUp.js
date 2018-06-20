@@ -8,7 +8,7 @@ export default class SignUp extends React.Component {
   handleSignUp = () => {
     auth
       .doCreateUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'Main'})))
+      .then(() => this.props.navigation.dispatch(NavigationActions.navigate({ routeName: 'MainNav'})))
       .catch(error => this.setState({ errorMessage: error.message }))
   }
   render() {
