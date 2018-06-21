@@ -12,8 +12,8 @@ class Main extends React.Component {
     super(props);
     this.state = {
       mapRegion: {
-        latitude: 37.78825,
-        longitude: -122.4324,
+        latitude: 1.3521,
+        longitude: 103.8198,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       }
@@ -30,7 +30,7 @@ class Main extends React.Component {
         <MapView
           style={{ alignSelf: 'stretch', flex: 1 }}
           region={this.state.mapRegion}
-          onRegionChange={this._handleMapRegionChange}
+          onRegionChangeComplete={this._handleMapRegionChange}
         />
       </View>
     )
