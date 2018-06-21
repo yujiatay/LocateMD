@@ -7,7 +7,7 @@ class TestPage extends Component {
 
     this.state = {
       field1: '',
-      field2: '',
+      field2: -1,
       message: null
     };
   }
@@ -15,7 +15,13 @@ class TestPage extends Component {
   onSubmit = event => {
     event.preventDefault();
     this.setState({ message: 'mushimush' });
-    database.joinQueue(this.state.field1);
+    if (this.state.field2 !== -1) {
+      let booktime = Date.now() + this.state.field2 * 3600000;
+      database.addAppointment(booktime, this.state.field1);
+    } else {
+      database.joinQueue(this.state.field1);
+    }
+
   };
 
   render() {
@@ -32,7 +38,7 @@ class TestPage extends Component {
         <input
           value={field2}
           onChange={event => this.setState({ field2: event.target.value })}
-          type="text"
+          type="number"
           placeholder="Field 2"
         />
         <button type="submit">Submit</button>
