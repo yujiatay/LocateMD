@@ -8,7 +8,7 @@ const columns = [{
   // specify the condition of filtering result
   // here is that finding the name started with `value`
   defaultSortOrder: 'ascend',
-  sorter: (a, b) => ("" + a).localeCompare(b.date),
+  sorter: (a, b) => ("" + a.date).localeCompare(b.date),
 }, {
   title: 'Patient',
   dataIndex: 'patient',

@@ -35,10 +35,15 @@ export const parseAppointmentsForDisplay = data => {
   if (data != null) {
     return Object.keys(data).map(i => {
       let srcAppt = data[i];
-      let dateTime = new Date(srcAppt.time);
+      let dateTime = new Date(srcAppt.startTime);
       return {
-        date: dateTime.getFullYear() + "-" + dateTime.getMonth() + "-" + dateTime.getDate()
-              + " " + dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds(),
+        date:
+          ((dateTime.getDate() < 10) ? '0' : '') + dateTime.getDate() + "-" +
+          ((dateTime.getMonth() < 10) ? '0' : '') + dateTime.getMonth() + "-" +
+          dateTime.getFullYear() + " " +
+          ((dateTime.getHours() < 10) ? '0' : '') + dateTime.getHours() + ":" +
+          ((dateTime.getMinutes() < 10) ? '0' : '') + dateTime.getMinutes() + ":" +
+          ((dateTime.getSeconds() < 10) ? '0' : '') + dateTime.getSeconds(),
         patient: srcAppt.patient
       };
     });
@@ -56,7 +61,7 @@ export const addAppointment = (timestamp, patientID) => {
   let newAppointment = {
     clinic: clinicID,
     patient: patientID,
-    time: timestamp,
+    startTime: timestamp,
     isBooking: true
   };
   clinicRef.set(newAppointment);
@@ -64,23 +69,18 @@ export const addAppointment = (timestamp, patientID) => {
 };
 
 export const joinQueue = (patientID) => {
-  let estimatedWaitTime = 600000;
   let clinicID = auth.currentUser.uid;
   let clinicApptRef = database.ref('appointmentsclinic/' + clinicID).push();
-  let patientRef = database.ref('appointmentspatient/' + patientID).push();
-  let clinicRef = database.ref('clinics/' + clinicID);
   database.ref('clinics/' + clinicID).once('value').then(function(snapshot) {
-    let estimatedAppointmentTime = (snapshot.val() && snapshot.val().lastStamp) + estimatedWaitTime || Date.now();
+    let estimatedAppointmentTime = (snapshot.val() && snapshot.val().nextEstimate) || Date.now();
     estimatedAppointmentTime = (estimatedAppointmentTime < Date.now()) ? Date.now() : estimatedAppointmentTime;
     let newAppointment = {
       clinic: clinicID,
       patient: patientID,
-      time: estimatedAppointmentTime,
+      startTime: estimatedAppointmentTime,
       isBooking: false
-    }
+    };
     clinicApptRef.set(newAppointment);
-    patientRef.set(newAppointment);
-    clinicRef.update({lastStamp: estimatedAppointmentTime});
   });
 
 };
