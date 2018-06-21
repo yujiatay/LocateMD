@@ -36,8 +36,12 @@ exports.syncAppointment = functions.database.ref("appointmentsclinic/{uid}/{entr
   }
   console.log("DUPE DATA");
   console.log(snapshot);
-  console.log(patientUID);
-  return admin.database().ref("appointmentspatient/" + patientUID).update(snapshot);
+  console.log(context.params.entry);
+  if (snapshot === null) {
+    return admin.database().ref("appointmentspatient/" + patientUID + "/" + context.params.entry).remove();
+  } else {
+    return admin.database().ref("appointmentspatient/" + patientUID + "/" + context.params.entry).update(snapshot);
+  }
 });
 
 // Function for joining queue, to determine the next queue time, correlate with advance booking slots with buffer
@@ -106,8 +110,13 @@ exports.updateRealTimeEstimates = functions.database.ref("appointmentsclinic/{ui
   } else {
     // TODO: check with realtime queue if it passes 3 hour mark
     let newBooking = {};
-    newBooking[appt.startTime] = appt.endTime;
-    return admin.database().ref("clinics/" + appt.clinic + "/bookedSlots").update(newBooking);
+    return clinicRef.once("value").then((clinic) => {
+      let clinicObj = clinic.val();
+      appt.endTime = appt.startTime + clinicObj.estimatedServiceTime;
+      newBooking[appt.startTime] = appt.endTime;
+      admin.database().ref("appointmentsclinic/" + context.params.uid + "/" + context.params.entry).update(appt);
+      return admin.database().ref("clinics/" + appt.clinic + "/bookedSlots").update(newBooking);
+    });
   }
 });
 
@@ -118,7 +127,6 @@ exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
   clinicRef.transaction((clinic) => {
     console.log(clinic);
     if (clinic) {
-      console.log("IN LOOP");
       // Obtain current slot times
       let startTime = clinic.nextEstimate;
       if (!clinic.hasOwnProperty('bookedSlots') || clinic.estimatedServiceTime === null) clinic.estimatedServiceTime = 600000;
