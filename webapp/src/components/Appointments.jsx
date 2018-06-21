@@ -17,6 +17,7 @@ class AppointmentsPage extends React.Component {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.appointmentsRef = firebase.database.ref('appointmentsclinic/' + this.props.authUser.uid);
+    this.appointmentsGenericRef = firebase.database.ref('appointments').orderByChild('clinic').equalTo(this.props.authUser.uid);
     this.state = {
       data: []
     }
@@ -49,12 +50,12 @@ class AppointmentsPage extends React.Component {
   }
 
   componentDidMount() {
-    this.appointmentsRef.on("value", (snapshot) => {
+    this.appointmentsGenericRef.on("value", (snapshot) => {
       let newData = snapshot.val();
       console.log(newData);
       this.setState({
         data: database.parseAppointmentsForDisplay(newData)
-      })
+      });
       console.log(this.state.data);
     }, function(error) {
       console.log(error);

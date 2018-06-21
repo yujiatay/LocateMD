@@ -84,3 +84,34 @@ export const joinQueue = (patientID) => {
   });
 
 };
+
+
+export const addAppointmentGeneric = (timestamp, patientID) => {
+  let clinicID = auth.currentUser.uid;
+  let clinicRef = database.ref('appointments').push();
+  // let patientRef = database.ref('appointmentspatient/' + patientID).push();
+  let newAppointment = {
+    clinic: clinicID,
+    patient: patientID,
+    startTime: timestamp,
+    isBooking: true
+  };
+  clinicRef.set(newAppointment);
+  // patientRef.set(newAppointment);
+};
+
+export const joinQueueGeneric = (patientID) => {
+  let clinicID = auth.currentUser.uid;
+  let clinicApptRef = database.ref('appointments').push();
+  database.ref('clinics/' + clinicID).once('value').then(function(snapshot) {
+    let estimatedAppointmentTime = (snapshot.val() && snapshot.val().nextEstimate) || Date.now();
+    estimatedAppointmentTime = (estimatedAppointmentTime < Date.now()) ? Date.now() : estimatedAppointmentTime;
+    let newAppointment = {
+      clinic: clinicID,
+      patient: patientID,
+      startTime: estimatedAppointmentTime,
+      isBooking: false
+    };
+    clinicApptRef.set(newAppointment);
+  });
+};

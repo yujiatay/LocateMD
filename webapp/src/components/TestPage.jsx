@@ -17,9 +17,9 @@ class TestPage extends Component {
     this.setState({ message: 'mushimush' });
     if (this.state.field2 !== -1) {
       let booktime = Date.now() + this.state.field2 * 3600000;
-      database.addAppointment(booktime, this.state.field1);
+      database.addAppointmentGeneric(booktime, this.state.field1);
     } else {
-      database.joinQueue(this.state.field1);
+      database.joinQueueGeneric(this.state.field1);
     }
 
   };
