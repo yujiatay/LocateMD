@@ -1,13 +1,23 @@
-import React from 'react'; 
+import React from 'react';
+import { TouchableHighlight, StyleSheet } from 'react-native';
 import { createDrawerNavigator, createStackNavigator, DrawerActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Feather';
 import Main from '../components/Main';
+
+const styles = StyleSheet.create({
+  menu: {
+    marginLeft: 10
+  }
+});
 
 const MainStack = createStackNavigator({
   MainScreen: {
     screen: Main,
     navigationOptions: ({navigation}) => ({
-      headerLeft: <Icon name="menu" size={30} color="#000" onPress={ () => { navigation.dispatch(DrawerActions.openDrawer())} }/>,
+      headerLeft:
+        <TouchableHighlight underlayColor='transparent' style={styles.menu} onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())}}>
+          <Icon name="menu" size={30} color="#000" />
+        </TouchableHighlight>,
     })
   }
 }, {
