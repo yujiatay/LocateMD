@@ -165,8 +165,13 @@ exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
       return clinic;
     }
     return {};
+  }, (error, committed, snapshot) => {
+    console.log(snapshot.val());
+    console.log(committed);
+    if (snapshot.val()) {
+      res.send(snapshot.val());
+    }
   });
-  res.send("DONE");
 });
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
