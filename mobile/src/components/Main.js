@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import withAuthorization from './withAuthorization';
 import { MapView } from "expo";
-import { MapStyleSilver } from "./MapStyles";
+import { MapStyleDefault } from "./MapStyles";
 
 class Main extends React.Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class Main extends React.Component {
         <MapView
           style={{ alignSelf: 'stretch', flex: 1 }}
           region={this.state.mapRegion}
-          customMapStyle={MapStyleSilver}
+          customMapStyle={MapStyleDefault}
           onRegionChangeComplete={this._handleMapRegionChange}
         />
       </View>

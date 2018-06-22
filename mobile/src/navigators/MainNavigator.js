@@ -1,12 +1,13 @@
 import React from 'react';
 import { TouchableHighlight, StyleSheet } from 'react-native';
 import { createDrawerNavigator, createStackNavigator, DrawerActions } from 'react-navigation';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Main from '../components/Main';
+import DrawerSideBar from '../components/DrawerSideBar'
 
 const styles = StyleSheet.create({
   menu: {
-    marginLeft: 10
+    marginLeft: 15
   }
 });
 
@@ -16,8 +17,8 @@ const MainStack = createStackNavigator({
     navigationOptions: ({navigation}) => ({
       headerLeft:
         <TouchableHighlight underlayColor='transparent' style={styles.menu} onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())}}>
-          <Icon name="menu" size={30} color="#000" />
-        </TouchableHighlight>,
+          <Icon name="ios-menu-outline" size={30} color="#000" />
+        </TouchableHighlight>
     })
   }
 }, {
@@ -39,6 +40,7 @@ const MainNavigator = createDrawerNavigator({
   Home: { screen: MainStack }
 }, {
   initialRouteName: 'Home',
+  contentComponent: DrawerSideBar,
 });
 
 export default MainNavigator;

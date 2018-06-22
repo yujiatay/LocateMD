@@ -1,3 +1,5 @@
+const MapStyleDefault = [];
+
 const MapStyleSilver = [
   {
     "elementType": "geometry",
@@ -159,4 +161,4 @@ const MapStyleSilver = [
   }
 ];
 
-export { MapStyleSilver };
+export { MapStyleSilver, MapStyleDefault };
