@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, Image, View } from 'react-native';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
-import Logo from '../assets/logo_raster_300x59.png';
+import Logo from '../../assets/logo_raster_300x59.png';
 
 const styles = StyleSheet.create({
   container: {

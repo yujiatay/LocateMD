@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { MapView } from "expo";
 import { Item, Input } from 'native-base';
 import Swiper from 'react-native-swiper';
-import withAuthorization from './withAuthorization';
+import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 
 const Slide = props => {
@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowRadius: 3,
+    elevation: 3,
   },
   swiper: {
     bottom: 0,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native';
-import { auth } from '../firebase';
+import { auth } from '../../firebase/index';
 import { NavigationActions } from 'react-navigation';
 
 export default class SignUp extends React.Component {

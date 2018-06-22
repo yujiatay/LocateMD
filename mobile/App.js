@@ -2,7 +2,7 @@ import React from 'react';
 import { AppRegistry } from 'react-native';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import WrappedAuthNavigator from './src/components/WrappedAuthNavigator';
+import WrappedAuthNavigator from './src/navigators/NavigatorWithAuthState';
 import configureStore from './src/reducers/configureStore';
 
 console.ignoredYellowBox = [

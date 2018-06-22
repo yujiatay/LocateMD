@@ -2,8 +2,8 @@ import React from 'react';
 import { TouchableHighlight, StyleSheet } from 'react-native';
 import { createDrawerNavigator, createStackNavigator, DrawerActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Main from '../components/Main';
-import DrawerSideBar from '../components/DrawerSideBar'
+import Main from '../components/main/Main';
+import DrawerSideBar from '../components/main/DrawerSideBar'
 
 const styles = StyleSheet.create({
   menu: {
