@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, Platform, Image, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import withAuthorization from './withAuthorization';
 import { MapView } from "expo";
+import { Item, Input } from 'native-base';
+import withAuthorization from './withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 
 class Main extends React.Component {
@@ -26,6 +27,9 @@ class Main extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Item regular style={styles.searchbox}>
+          <Input placeholder='Clinics near me' />
+        </Item>
         <MapView
           style={{ alignSelf: 'stretch', flex: 1 }}
           region={this.state.mapRegion}
@@ -50,5 +54,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  searchbox: {
+    flex: 1,
+    marginLeft: 20,
+    marginRight: 20,
+    backgroundColor: '#fff',
+    top: 100,
+    zIndex: 10,
+    position: 'absolute',
+    borderStyle: 'solid',
+    borderColor: 'white',
+    borderRadius: 3,
+    // box-shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 5,
   }
-})
+});
