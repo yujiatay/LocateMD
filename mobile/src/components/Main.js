@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, Platform, Image, Text, View } from 'react-native';
-import { DrawerActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import withAuthorization from './withAuthorization';
 import { MapView } from "expo";
-import Icon from 'react-native-vector-icons/Feather';
+import { MapStyleSilver } from "./MapStyles";
 
 class Main extends React.Component {
   constructor(props) {
@@ -30,6 +29,7 @@ class Main extends React.Component {
         <MapView
           style={{ alignSelf: 'stretch', flex: 1 }}
           region={this.state.mapRegion}
+          customMapStyle={MapStyleSilver}
           onRegionChangeComplete={this._handleMapRegionChange}
         />
       </View>
