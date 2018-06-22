@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { MapView } from "expo";
-import { Item, Input } from 'native-base';
+import { Item, Input, Icon } from 'native-base';
 import Swiper from 'react-native-swiper';
 import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
@@ -29,7 +29,8 @@ class Main extends React.Component {
     return (
       <View style={styles.container}>
         <Item regular style={styles.searchbox}>
-          <Input placeholder='Clinics near me' />
+          <Icon active name="ios-search"/>
+          <Input placeholder='Clinics Near Me' style={styles.text}/>
         </Item>
         <View style={styles.swiper}>
           <Swiper showsPagination={false}>
@@ -93,4 +94,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     backgroundColor: 'transparent',
   },
+  text: {
+    fontSize: 20,
+
+  }
 });
