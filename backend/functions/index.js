@@ -6,6 +6,9 @@ const admin = require('firebase-admin');
 //
 admin.initializeApp();
 
+exports.updateClinicStamp = functions.database.ref("clinics").onWrite((change, context) => {
+  return admin.database().ref("clinicMeta").update({lastModified: Date.now()});
+});
 
 // TODO: Check if really necessary (alot cheaper without)
 exports.syncAppointment = functions.database.ref("appointmentsclinic/{uid}/{entry}").onWrite((change, context) => {
