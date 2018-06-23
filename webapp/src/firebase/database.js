@@ -24,7 +24,7 @@ export const getInfo = id => {
   }
 
   database
-  .ref(`clinic/${id}`)
+  .ref(`clinics/${id}`)
   .once('value')
   .then(function (snapshot) {
     return snapshot.val();
