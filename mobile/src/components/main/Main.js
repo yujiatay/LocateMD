@@ -8,10 +8,12 @@ import Swiper from 'react-native-swiper';
 import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 import ClinicInfo from './ClinicInfo';
+import { auth, database, firebase } from '../../firebase';
 
 class Main extends React.Component {
   constructor(props) {
     super(props);
+    this.clinicsRef = firebase.database.ref('clinics');
     this.state = {
       mapRegion: {
         latitude: 1.3521,
@@ -20,6 +22,7 @@ class Main extends React.Component {
         longitudeDelta: 0.0421
       },
       errorMessage: '',
+      clinicsObj: {},
       clinicList: [{ name: "Tay Clinic", addr: "Magnolia", openingHours: "9am to 5pm", phone: "+65 1234 5678", waitTime: "10min"}, { text: "Mushimush"}]
     };
   }
@@ -30,9 +33,24 @@ class Main extends React.Component {
       });
     } else {
       this._getLocationAsync();
+      this._getClinics();
       // Location.watchPositionAsync({ timeInterval: 600, distanceInterval: 50 }, this._locationChanged);
     }
   }
+  componentWillUnmount() {
+    this.clinicsRef.off();
+  }
+  _getClinics = () => {
+    this.clinicsRef.once("value", (snapshot) => {
+      let newData = snapshot.val();
+      this.setState({
+        clinicList: database.parseClinics(newData),
+        clinicsObj: newData
+      });
+    }, function(error) {
+      console.log(error);
+    });
+  };
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {

@@ -17,15 +17,15 @@ const ClinicInfo = ({ clinic }) => {
           </CardItem>
           <CardItem>
             <Body>
-              <Text>Address: {clinic.addr}</Text>
+              <Text>Address: {clinic.address}</Text>
               <Text>Opening hours: {clinic.openingHours}</Text>
-              <Text>Phone: {clinic.phone}</Text>
+              <Text>Phone: {clinic.contactNumber}</Text>
             </Body>
           </CardItem>
           <CardItem style={styles.cardBottom}>
             <Left>
               <Icon active name="ios-time-outline" />
-              <Text>{clinic.waitTime}</Text>
+              <Text>{clinic.estimatedWaitTime}</Text>
             </Left>
             <Right>
               <Button transparent>
