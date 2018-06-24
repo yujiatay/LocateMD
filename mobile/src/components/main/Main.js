@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { MapView } from "expo";
+import { MapView, Constants, Location, Permissions } from "expo";
 import { Item, Input, Icon } from 'native-base';
 import Swiper from 'react-native-swiper';
 import withAuthorization from '../auth/withAuthorization';
@@ -19,9 +19,38 @@ class Main extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
+      errorMessage: '',
       clinicList: [{ name: "Tay Clinic", addr: "Magnolia", openingHours: "9am to 5pm", phone: "+65 1234 5678", waitTime: "10min"}, { text: "Mushimush"}]
     };
   }
+  componentDidMount() {
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+      // Location.watchPositionAsync({ timeInterval: 600, distanceInterval: 50 }, this._locationChanged);
+    }
+  }
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState(prevState => ({
+      mapRegion: {
+        ...prevState.mapRegion,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      }
+    }));
+  };
+  _locationChanged = (location) => {
+  };
   _handleMapRegionChange = mapRegion => {
     this.setState({ mapRegion });
   };
@@ -45,6 +74,7 @@ class Main extends React.Component {
         <MapView
           style={{ alignSelf: 'stretch', flex: 1 }}
           region={this.state.mapRegion}
+          showsUserLocation={true}
           customMapStyle={MapStyleDefault}
           onRegionChangeComplete={this._handleMapRegionChange}
         />
