@@ -7,7 +7,7 @@ const ClinicInfo = ({ clinic }) => {
   return (
     <View style={styles.container}>
         <Card style={styles.slide}>
-          <CardItem>
+          <CardItem style={styles.card}>
             <Left>
               <Thumbnail source={clinicIconPlaceholder}/>
               <Body>
@@ -15,7 +15,7 @@ const ClinicInfo = ({ clinic }) => {
               </Body>
             </Left>
           </CardItem>
-          <CardItem>
+          <CardItem style={styles.card}>
             <Body>
               <Text>Address: {clinic.address}</Text>
               <Text>Opening hours: {clinic.openingHours}</Text>
@@ -51,23 +51,27 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 20,
-    borderRadius: 5,
+    marginBottom: 10,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     // box-shadow
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  card: {
+    borderRadius: 15
   },
   cardBottom: {
     borderTopColor: '#cdcdcd',
     borderTopWidth: 1,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10
+    borderTopRightRadius: 10,
+    borderRadius: 15
   },
   text: {
     color: '#9DD6EB',

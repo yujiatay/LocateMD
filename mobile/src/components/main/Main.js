@@ -23,7 +23,7 @@ class Main extends React.Component {
       },
       errorMessage: '',
       clinicsObj: {},
-      clinicList: [{ name: "Tay Clinic", addr: "Magnolia", openingHours: "9am to 5pm", phone: "+65 1234 5678", waitTime: "10min"}, { text: "Mushimush"}]
+      clinicList: [],
     };
   }
   componentDidMount() {
@@ -80,7 +80,7 @@ class Main extends React.Component {
           <Input placeholder='Clinics Near Me' style={styles.text}/>
         </Item>
         <View style={styles.swiper}>
-          <Swiper showsPagination={false}>
+          <Swiper showsPagination={false} loop={false}>
             {
               this.state.clinicList.map((item, i) =>
                 <ClinicInfo
