@@ -136,6 +136,10 @@ exports.updateRealTimeEstimates = functions.database.ref("appointments/{entry}")
       if (clinic) {
         // Obtain current slot times
         let startTime = clinic.nextEstimate;
+        // REVERT ANY NEGATIVE TIMINGS TO ACTUAL ESTIMATE
+        if (startTime < 0) {
+          startTime = -startTime;
+        }
         if (!clinic.hasOwnProperty('bookedSlots') || clinic.estimatedServiceTime === null) clinic.estimatedServiceTime = 600000;
         let endTime = startTime + clinic.estimatedServiceTime;
 
@@ -143,7 +147,7 @@ exports.updateRealTimeEstimates = functions.database.ref("appointments/{entry}")
         let bookingList = (!clinic.hasOwnProperty('bookedSlots') || clinic.bookedSlots === null) ? {} : clinic.bookedSlots;
         // Likely to cause problems if estimate is >3 hours (conflict with booking slots)
         // Check if estimatedStartTime is accurate
-        if (!clinic.hasOwnProperty('nextEstimate') || clinic.nextEstimate === null ||
+        if (!clinic.hasOwnProperty('nextEstimate') || clinic.nextEstimate === null || clinic.nextEstimate >= 0 &&
           clinic.nextEstimate < (Date.now() - 60000)) {
           // estimate is inaccurate, obtain better estimate from current time
           startTime = Date.now();
@@ -214,6 +218,10 @@ exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
     if (clinic) {
       // Obtain current slot times
       let startTime = clinic.nextEstimate;
+      // REVERT ANY NEGATIVE TIMINGS TO ACTUAL ESTIMATE
+      if (startTime < 0) {
+        startTime = -startTime;
+      }
       if (!clinic.hasOwnProperty('bookedSlots') || clinic.estimatedServiceTime === null) clinic.estimatedServiceTime = 600000;
       let endTime = startTime + clinic.estimatedServiceTime;
 
@@ -221,7 +229,7 @@ exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
       let bookingList = (!clinic.hasOwnProperty('bookedSlots') || clinic.bookedSlots === null) ? {} : clinic.bookedSlots;
       // Likely to cause problems if estimate is >3 hours (conflict with booking slots)
       // Check if estimatedStartTime is accurate
-      if (!clinic.hasOwnProperty('nextEstimate') || clinic.nextEstimate === null ||
+      if (!clinic.hasOwnProperty('nextEstimate') || clinic.nextEstimate === null || clinic.nextEstimate >= 0 &&
         clinic.nextEstimate < (Date.now() - 60000)) {
         // estimate is inaccurate, obtain better estimate from current time
         startTime = Date.now();
