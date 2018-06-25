@@ -4,6 +4,8 @@ import { Card, CardItem, Text, Left, Right, Thumbnail, Body, Button, Icon } from
 import clinicIconPlaceholder from '../../assets/favicon_64x64.png';
 import {NavigationActions} from "react-navigation";
 
+import { database } from "../../firebase";
+// Is there a better place for this?
 const ClinicInfo = ({ clinic, navigation }) => {
   return (
     <View style={styles.container}>
@@ -43,8 +45,10 @@ const ClinicInfo = ({ clinic, navigation }) => {
           </CardItem>
           <CardItem style={styles.cardBottom}>
             <Left>
+            <Button transparent onPress={() => database.updateClinicEstimate(clinic.clinicID)}>
               <Icon active name="ios-time-outline" />
               <Text style={styles.text}>{clinic.estimatedWaitTime}</Text>
+            </Button>
             </Left>
             <Right>
               <Button transparent onPress={() => {navigation.dispatch(NavigationActions.navigate({ routeName: 'BookScreen' }))}}>

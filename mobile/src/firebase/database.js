@@ -1,4 +1,4 @@
-import { database, auth, functions } from './firebase';
+import { database, auth } from './firebase';
 
 // 3 hours
 const BOOKINGTHRESHOLD = 10800000;
@@ -23,6 +23,12 @@ export const updateInfo = (id, email, contactNumber = '') => {
 };
 
 
+// TODO : change to proper https request
+export const updateClinicEstimate = (clinicID) => {
+  fetch(`https://us-central1-locatemd.cloudfunctions.net/updateClinicEstimate?clinicID=${encodeURIComponent(clinicID)}`, {
+    method: "GET"
+  });
+};
 
 export const getInfo = () => {
 
@@ -49,6 +55,11 @@ export const parseClinics = data => {
       let srcClinic = data[i];
 
       let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
+
+      // // TODO: temp hack to resolve poor estimates
+      if (timeEstimateString === "Poor estimate, please refresh to get updated estimate.") {
+        updateClinicEstimate(i);
+      }
 
       return {
         name: srcClinic.clinicName,
