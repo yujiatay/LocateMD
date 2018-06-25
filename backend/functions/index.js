@@ -180,7 +180,10 @@ exports.updateRealTimeEstimates = functions.database.ref("appointments/{entry}")
             nextEndTime = bookingList[key] + clinic.estimatedServiceTime;
           }
         });
-        // TODO: GIVE NEGATIVE NUMBER IF MORE THAN BOOKING THRESHOLD
+        // GIVE NEGATIVE NUMBER IF MORE THAN BOOKING THRESHOLD, DEFINES POSSIBLY INACCURATE TIMESTAMP
+        if (nextStartTime > Date.now() + BOOKINGTHRESHOLD) {
+          nextStartTime = -nextStartTime;
+        }
         clinic.nextEstimate = nextStartTime;
         appt.startTime = startTime;
         appt.endTime = endTime;
@@ -240,7 +243,10 @@ exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
         });
       }
 
-      // TODO: GIVE NEGATIVE NUMBER IF MORE THAN BOOKING THRESHOLD
+      // GIVE NEGATIVE NUMBER IF MORE THAN BOOKING THRESHOLD
+      if (startTime > Date.now() + BOOKINGTHRESHOLD) {
+        startTime = -startTime;
+      }
       clinic.nextEstimate = startTime;
       console.log("AMENDED");
       console.log(clinic);
