@@ -9,19 +9,37 @@ const ClinicInfo = ({ clinic, navigation }) => {
     <View style={styles.container}>
         <Card style={styles.slide}>
           <CardItem style={styles.card}>
-            <Left>
-              <Thumbnail source={clinicIconPlaceholder}/>
+            {/*<Left>*/}
+              {/*<Thumbnail source={clinicIconPlaceholder}/>*/}
               <Body>
-                <Text style={styles.text}>{clinic.name}</Text>
+                <Text style={[styles.text, { fontSize: 24 }]}>{clinic.name}</Text>
               </Body>
-            </Left>
+            {/*</Left>*/}
           </CardItem>
-          <CardItem style={styles.card}>
-            <Body>
-              <Text style={styles.text}>Address: {clinic.address}</Text>
-              <Text style={styles.text}>Opening hours: {clinic.openingHours}</Text>
-              <Text style={styles.text}>Phone: {clinic.contactNumber}</Text>
-            </Body>
+          {/*<CardItem style={styles.card}>*/}
+            {/*<Body>*/}
+              {/*<Text style={styles.text}>Address: {clinic.address}</Text>*/}
+              {/*<Text style={styles.text}>Opening hours: {clinic.openingHours}</Text>*/}
+              {/*<Text style={styles.text}>Phone: {clinic.contactNumber}</Text>*/}
+            {/*</Body>*/}
+          {/*</CardItem>*/}
+          <CardItem style={[styles.card, {flexDirection: 'row'}]}>
+            <Left>
+              <Icon name="md-walk"/>
+              <Text style={styles.text}>22 min</Text>
+            </Left>
+            <Left>
+              <Icon name="md-car"/>
+              <Text style={styles.text}>22 min</Text>
+            </Left>
+            <Left>
+              <Icon name="md-bus"/>
+              <Text style={styles.text}>22 min</Text>
+            </Left>
+            <Left>
+              <Icon name="md-subway"/>
+              <Text style={styles.text}>22 min</Text>
+            </Left>
           </CardItem>
           <CardItem style={styles.cardBottom}>
             <Left>
@@ -29,7 +47,7 @@ const ClinicInfo = ({ clinic, navigation }) => {
               <Text style={styles.text}>{clinic.estimatedWaitTime}</Text>
             </Left>
             <Right>
-              <Button onPress={() => {navigation.dispatch(NavigationActions.navigate({ routeName: 'BookScreen' }))}}>
+              <Button transparent onPress={() => {navigation.dispatch(NavigationActions.navigate({ routeName: 'BookScreen' }))}}>
                 <Text style={styles.text}>Book</Text>
               </Button>
             </Right>
@@ -57,24 +75,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    // box-shadow
+    // ios box-shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 2,
+    // android box-shadow
     elevation: 1,
   },
   card: {
-    borderRadius: 15
+    // quick-fix for protruding corners
+    backgroundColor: 'transparent'
   },
   cardBottom: {
     borderTopColor: '#cdcdcd',
     borderTopWidth: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    borderRadius: 15
+    // quick-fix for protruding corners
+    backgroundColor: 'transparent'
   },
   text: {
-    fontFamily: 'Roboto_light'
+    fontFamily: 'Roboto_light',
+    fontSize: 14
   }
 });

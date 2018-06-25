@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Platform, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Dimensions, Platform, Text, TouchableOpacity, Button } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { MapView, Constants, Location, Permissions } from "expo";
@@ -111,8 +111,8 @@ class Main extends React.Component {
             <Card style={styles.modal}>
               <View style={{ flex: 1, }}>
                 <Text style={{ fontSize: 24, fontFamily: 'Roboto_light' }}>Tay Family Clinic</Text>
-                <TouchableOpacity><Text>Queue Now</Text></TouchableOpacity>
-                <TouchableOpacity><Text>Book for later</Text></TouchableOpacity>
+                <TouchableOpacity><Button onPress={() => {}} title="Queue Now" /></TouchableOpacity>
+                <TouchableOpacity><Button onPress={() => {}} title="Book for later"/></TouchableOpacity>
               </View>
             </Card>
           </View>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: 'absolute',
     zIndex: 10,
-    height: 300,
+    height: 200,
     width: Dimensions.get('window').width,
     backgroundColor: 'transparent',
   },
