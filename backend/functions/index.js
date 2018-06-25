@@ -254,9 +254,7 @@ exports.updateClinicEstimate = functions.https.onRequest((req, res) => {
     }
     return {};
   }, (error, committed, snapshot) => {
-    console.log(snapshot.val());
-    console.log(committed);
-    if (snapshot.val()) {
+    if (snapshot.val() && Object.keys(snapshot.val()).length !== 0) {
       res.send(snapshot.val());
     }
   });
