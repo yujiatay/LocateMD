@@ -1,4 +1,9 @@
-import { database, auth } from './firebase';
+import { database, auth, functions } from './firebase';
+
+// 3 hours
+const BOOKINGTHRESHOLD = 10800000;
+// 5 minutes
+const OUTDATEDTHRESHOLD = -5;
 
 export const updateInfo = (id, email, contactNumber = '') => {
   database.ref(`patients/${id}`).set(
@@ -17,12 +22,11 @@ export const updateInfo = (id, email, contactNumber = '') => {
   );
 };
 
-export const getInfo = id => {
 
-  if (id === undefined) {
-    id = auth.currentUser.uid;
-  }
 
+export const getInfo = () => {
+
+  id = auth.currentUser.uid;
   database
   .ref(`patients/${id}`)
   .once('value')
@@ -31,26 +35,60 @@ export const getInfo = id => {
   });
 };
 
+export const getAppointments = () => {
+  id = auth.currentUser.uid;
+  let appointmentRef = database.ref('appointments').orderByChild('patient').equalTo(id);
+  appointmentRef.once('value', (snapshot) => {
+    return snapshot.val();
+  })
+};
+
 export const parseClinics = data => {
   if (data != null) {
     return Object.keys(data).map(i => {
       let srcClinic = data[i];
-      let estimatedTime = Math.floor((srcClinic.nextEstimate - Date.now()) / 60000);
-      if (estimatedTime < 0) estimatedTime = 0;
+
+      let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
+
       return {
         name: srcClinic.clinicName,
         address: srcClinic.address.blockNo + " " + srcClinic.address.streetName +
-                 " S" + srcClinic.address.postalCode,
+        " S" + srcClinic.address.postalCode,
         // TODO: figure out how to display opening hours nicely
         openingHours: "9am to 5pm",
         contactNumber: srcClinic.contactNumber,
-        estimatedWaitTime: estimatedTime + " min"
+        estimatedWaitTime: timeEstimateString,
+        clinicID: i,
+        lon: srcClinic.coords.lon,
+        lat: srcClinic.coords.lat
       };
     });
   } else {
     return null;
   }
 };
+
+
+function resolveEstimatedTime(estimateMilliseconds) {
+  if (estimateMilliseconds < 0) {
+    if (-estimateMilliseconds > Date.now() + BOOKINGTHRESHOLD) {
+      return "More than 3 hours, try booking instead.";
+    } else {
+      return "Poor estimate, please refresh to get updated estimate.";
+    }
+  }
+  let estimate = Math.floor((estimateMilliseconds - Date.now()) / 60000);
+  if (estimate < 0) {
+    if (estimate < OUTDATEDTHRESHOLD) {
+      return "Poor estimate, please refresh to get updated estimate.";
+    } else {
+      estimate = 0;
+    }
+  }
+  return estimate + " min";
+}
+
+
 
 export const bookAppointment = (timestamp, clinicID) => {
   let patientID = auth.currentUser.uid;
