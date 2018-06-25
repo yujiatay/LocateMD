@@ -43,7 +43,7 @@ class Main extends React.Component {
     this.clinicsRef.off();
   }
   _getClinics = () => {
-    this.clinicsRef.once("value", (snapshot) => {
+    this.clinicsRef.on("value", (snapshot) => {
       let newData = snapshot.val();
       this.setState({
         clinicList: database.parseClinics(newData),
