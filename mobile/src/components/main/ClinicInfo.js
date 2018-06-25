@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, View } from "react-native";
 import { Card, CardItem, Text, Left, Right, Thumbnail, Body, Button, Icon } from 'native-base';
 import clinicIconPlaceholder from '../../assets/favicon_64x64.png';
+import {NavigationActions} from "react-navigation";
 
-const ClinicInfo = ({ clinic }) => {
+const ClinicInfo = ({ clinic, navigation }) => {
   return (
     <View style={styles.container}>
         <Card style={styles.slide}>
@@ -11,25 +12,25 @@ const ClinicInfo = ({ clinic }) => {
             <Left>
               <Thumbnail source={clinicIconPlaceholder}/>
               <Body>
-                <Text>{clinic.name}</Text>
+                <Text style={styles.text}>{clinic.name}</Text>
               </Body>
             </Left>
           </CardItem>
           <CardItem style={styles.card}>
             <Body>
-              <Text>Address: {clinic.address}</Text>
-              <Text>Opening hours: {clinic.openingHours}</Text>
-              <Text>Phone: {clinic.contactNumber}</Text>
+              <Text style={styles.text}>Address: {clinic.address}</Text>
+              <Text style={styles.text}>Opening hours: {clinic.openingHours}</Text>
+              <Text style={styles.text}>Phone: {clinic.contactNumber}</Text>
             </Body>
           </CardItem>
           <CardItem style={styles.cardBottom}>
             <Left>
               <Icon active name="ios-time-outline" />
-              <Text>{clinic.estimatedWaitTime}</Text>
+              <Text style={styles.text}>{clinic.estimatedWaitTime}</Text>
             </Left>
             <Right>
-              <Button transparent>
-                <Text>Book</Text>
+              <Button onPress={() => {navigation.dispatch(NavigationActions.navigate({ routeName: 'BookScreen' }))}}>
+                <Text style={styles.text}>Book</Text>
               </Button>
             </Right>
           </CardItem>
@@ -74,8 +75,6 @@ const styles = StyleSheet.create({
     borderRadius: 15
   },
   text: {
-    color: '#9DD6EB',
-    fontSize: 30,
-    fontWeight: 'bold'
+    fontFamily: 'Roboto_light'
   }
 });

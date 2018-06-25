@@ -3,7 +3,8 @@ import { TouchableHighlight, StyleSheet } from 'react-native';
 import { createDrawerNavigator, createStackNavigator, DrawerActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Main from '../components/main/Main';
-import DrawerSideBar from '../components/main/DrawerSideBar'
+import DrawerSideBar from '../components/main/DrawerSideBar';
+import Booking from '../components/main/Booking';
 
 const styles = StyleSheet.create({
   menu: {
@@ -18,21 +19,26 @@ const MainStack = createStackNavigator({
       headerLeft:
         <TouchableHighlight underlayColor='transparent' style={styles.menu} onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())}}>
           <Icon name="ios-menu-outline" size={30} color="#000" />
-        </TouchableHighlight>
+        </TouchableHighlight>,
+      headerStyle: {
+        backgroundColor: "transparent",
+        position: 'absolute',
+        zIndex: 100,
+        top: 0,
+        left: 0,
+        right: 0
+      }
     })
+  },
+  BookScreen: {
+    screen: Booking
   }
 }, {
   initialRouteName: 'MainScreen',
   navigationOptions: {
+    mode: 'modal',
     headerMode: 'screen',
-    headerStyle: {
-      backgroundColor: "transparent",
-      position: 'absolute',
-      zIndex: 100,
-      top: 0,
-      left: 0,
-      right: 0
-    }
+
   }
 });
 

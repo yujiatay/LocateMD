@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Platform } from 'react-native';
+import { StyleSheet, View, Dimensions, Platform, Text, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { MapView, Constants, Location, Permissions } from "expo";
-import { Item, Input, Icon } from 'native-base';
+import { Item, Input, Icon, Card } from 'native-base';
 import Swiper from 'react-native-swiper';
 import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 import ClinicInfo from './ClinicInfo';
 import { auth, database, firebase } from '../../firebase';
+import Modal from "react-native-modal";
 
 class Main extends React.Component {
   constructor(props) {
@@ -24,6 +25,7 @@ class Main extends React.Component {
       errorMessage: '',
       clinicsObj: {},
       clinicList: [],
+      isModalVisible: false
     };
   }
   componentDidMount() {
@@ -72,20 +74,26 @@ class Main extends React.Component {
   _handleMapRegionChange = mapRegion => {
     this.setState({ mapRegion });
   };
+  _toggleModal = () =>
+    this.setState({ isModalVisible: !this.state.isModalVisible });
   render() {
     return (
       <View style={styles.container}>
         <Item regular style={styles.searchbox}>
           <Icon active name="ios-search"/>
           <Input placeholder='Clinics Near Me' style={styles.text}/>
+          <TouchableOpacity onPress={this._toggleModal}>
+            <Text>Show Modal</Text>
+          </TouchableOpacity>
         </Item>
         <View style={styles.swiper}>
           <Swiper showsPagination={false} loop={false}>
             {
               this.state.clinicList.map((item, i) =>
                 <ClinicInfo
-                clinic={item}
-                key={i}/>)
+                  clinic={item}
+                  navigation={this.props.navigation}
+                  key={i}/>)
             }
           </Swiper>
         </View>
@@ -96,7 +104,19 @@ class Main extends React.Component {
           customMapStyle={MapStyleDefault}
           onRegionChangeComplete={this._handleMapRegionChange}
         />
-
+        <Modal isVisible={this.state.isModalVisible}
+               onSwipe={this._toggleModal} swipeDirection="down" onBackButtonPress={this._toggleModal}
+               backdropColor={'transparent'}>
+          <View style={{ flex: 1 }}>
+            <Card style={styles.modal}>
+              <View style={{ flex: 1, }}>
+                <Text style={{ fontSize: 24, fontFamily: 'Roboto_light' }}>Tay Family Clinic</Text>
+                <TouchableOpacity><Text>Queue Now</Text></TouchableOpacity>
+                <TouchableOpacity><Text>Book for later</Text></TouchableOpacity>
+              </View>
+            </Card>
+          </View>
+        </Modal>
       </View>
     )
   }
@@ -108,7 +128,8 @@ const mapStateToProps = state => ({
 
 const authCondition = authUser => !!authUser;
 
-export default compose(withAuthorization(authCondition), connect(mapStateToProps))(Main);
+// export default compose(withAuthorization(authCondition), connect(mapStateToProps))(Main);
+export default connect(mapStateToProps)(Main);
 
 const styles = StyleSheet.create({
   container: {
@@ -129,10 +150,10 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     // box-shadow
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 1,
   },
   swiper: {
     bottom: 0,
@@ -142,8 +163,15 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     backgroundColor: 'transparent',
   },
+  modal: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderColor: '#cdcdcd',
+    elevation: 1
+  },
   text: {
     fontSize: 20,
-
+    fontFamily: 'Roboto_light'
   }
 });
