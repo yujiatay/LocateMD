@@ -126,7 +126,7 @@ class Main extends React.Component {
         onRegionChangeComplete={this._handleMapRegionChange}
       />
       // Search Elements (Bar and suggestions), offset 10% from top
-      <View style={{top: "10%", flex: 1}}>
+      <View style={{top: "10%", position: "absolute", width: "80%", height: "30%", flex: 1, alignSelf:"center"}} pointerEvents="box-none">
         <Item regular style={styles.searchbox}>
           <Icon active name="ios-search"/>
           <Input
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchbox: {
-    width: '80%',
+
     backgroundColor: '#fff',
     zIndex: 10,
     borderStyle: 'solid',
