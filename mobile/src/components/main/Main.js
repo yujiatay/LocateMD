@@ -3,13 +3,13 @@ import { StyleSheet, View, Dimensions, Platform, Text, TouchableOpacity, Button 
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { MapView, Constants, Location, Permissions } from "expo";
-import { Item, Input, Icon, Card } from 'native-base';
+import { Item, Input, Icon, Card, List, ListItem } from 'native-base';
 import Swiper from 'react-native-swiper';
 import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 import ClinicInfo from './ClinicInfo';
 import { auth, database, firebase } from '../../firebase';
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
 
 class Main extends React.Component {
   constructor(props) {
@@ -25,7 +25,8 @@ class Main extends React.Component {
       errorMessage: '',
       clinicsObj: {},
       clinicList: [],
-      isModalVisible: false
+      searchText: "",
+      searchSuggestions: []
     };
   }
   componentDidMount() {
@@ -74,49 +75,97 @@ class Main extends React.Component {
   _handleMapRegionChange = mapRegion => {
     this.setState({ mapRegion });
   };
-  _toggleModal = () =>
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+
+  _filterByClinicName = (searchString) => {
+    let validClinics = [];
+    let clinicObj = this.state.clinicsObj;
+    let regSearch = new RegExp(searchString, 'i' );
+    Object.keys(clinicObj).forEach((key) => {
+      if (clinicObj[key].clinicName.search(regSearch) !== -1) {
+        let validClinic = clinicObj[key];
+        validClinic.key = key;
+        validClinics.push(validClinic);
+      }
+    });
+    this.setState({
+      clinicList: database.parseClinics(validClinics)
+    });
+    // return validClinics;
+  };
+
+  _searchSuggestions = (searchString) => {
+    if (searchString === "") {
+      return this._clearSearchSuggestions();
+    }
+    let validNames = [];
+    let clinicObj = this.state.clinicsObj;
+    let regSearch = new RegExp(searchString, 'i' );
+    Object.keys(clinicObj).forEach((key) => {
+      if (clinicObj[key].clinicName.search(regSearch) !== -1) {
+        validNames.push(clinicObj[key].clinicName);
+      }
+    });
+    this.setState({
+      searchSuggestions: validNames
+    });
+  }
+  _clearSearchSuggestions = () => {
+    this.setState({searchSuggestions: []});
+  }
+
   render() {
     return (
+      // Overarching container
       <View style={styles.container}>
+      // Map, placed absolutely to occupy entire container
+      <MapView
+        style={{ position: "absolute", width: "100%", height: "100%"}}
+        region={this.state.mapRegion}
+        showsUserLocation={true}
+        customMapStyle={MapStyleDefault}
+        onRegionChangeComplete={this._handleMapRegionChange}
+      />
+      // Search Elements (Bar and suggestions), offset 10% from top
+      <View style={{top: "10%", flex: 1}}>
         <Item regular style={styles.searchbox}>
           <Icon active name="ios-search"/>
-          <Input placeholder='Clinics Near Me' style={styles.text}/>
-          <TouchableOpacity onPress={this._toggleModal}>
-            <Text>Show Modal</Text>
-          </TouchableOpacity>
-        </Item>
-        <View style={styles.swiper}>
-          <Swiper showsPagination={false} loop={false}>
-            {
-              this.state.clinicList.map((item, i) =>
-                <ClinicInfo
-                  clinic={item}
-                  navigation={this.props.navigation}
-                  key={i}/>)
+          <Input
+            onSubmitEditing={(e) => {
+                this._filterByClinicName(e.nativeEvent.text);
+                this._clearSearchSuggestions();
+              }
+            }
+          onChangeText={(searchText) => this._searchSuggestions(searchText)}
+          value={this.state.searchText}
+          placeholder='Clinics Near Me'
+          style={styles.text}
+        />
+      </Item>
+      <List dataArray={this.state.searchSuggestions}
+        renderRow={(item) =>
+          <ListItem noIndent style={{backgroundColor: "#fff"}}
+            onPress={() => {
+              this._filterByClinicName(item);
+              this._clearSearchSuggestions();
+            }}
+            >
+              <Text style={styles.suggestions}>{item}</Text>
+            </ListItem>
+          }>
+        </List>
+      </View>
+      // Swiper
+      <View style={styles.swiper}>
+        <Swiper showsPagination={false} loop={false}>
+          {
+            this.state.clinicList.map((item, i) =>
+            <ClinicInfo
+              clinic={item}
+              navigation={this.props.navigation}
+              key={i}/>)
             }
           </Swiper>
         </View>
-        <MapView
-          style={{ alignSelf: 'stretch', flex: 1 }}
-          region={this.state.mapRegion}
-          showsUserLocation={true}
-          customMapStyle={MapStyleDefault}
-          onRegionChangeComplete={this._handleMapRegionChange}
-        />
-        <Modal isVisible={this.state.isModalVisible}
-               onSwipe={this._toggleModal} swipeDirection="down" onBackButtonPress={this._toggleModal}
-               backdropColor={'transparent'}>
-          <View style={{ flex: 1 }}>
-            <Card style={styles.modal}>
-              <View style={{ flex: 1, }}>
-                <Text style={{ fontSize: 24, fontFamily: 'Roboto_light' }}>Tay Family Clinic</Text>
-                <TouchableOpacity><Button onPress={() => {}} title="Queue Now" /></TouchableOpacity>
-                <TouchableOpacity><Button onPress={() => {}} title="Book for later"/></TouchableOpacity>
-              </View>
-            </Card>
-          </View>
-        </Modal>
       </View>
     )
   }
@@ -134,17 +183,14 @@ export default connect(mapStateToProps)(Main);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   searchbox: {
-    flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
+    width: '80%',
     backgroundColor: '#fff',
-    top: 100,
     zIndex: 10,
-    position: 'absolute',
     borderStyle: 'solid',
     borderColor: 'white',
     borderRadius: 3,
@@ -156,19 +202,14 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   swiper: {
-    bottom: 0,
-    position: 'absolute',
     zIndex: 10,
     height: 200,
-    width: Dimensions.get('window').width,
+    width: '100%',
     backgroundColor: 'transparent',
   },
-  modal: {
-    flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    borderColor: '#cdcdcd',
-    elevation: 1
+  suggestions: {
+    fontSize: 20,
+    fontFamily: 'Roboto_light'
   },
   text: {
     fontSize: 20,
