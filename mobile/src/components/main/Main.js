@@ -118,7 +118,6 @@ class Main extends React.Component {
     return (
       // Overarching container
       <View style={styles.container}>
-        // Map, placed absolutely to occupy entire container
         <MapView
           style={{ position: "absolute", width: "100%", height: "100%"}}
           region={this.state.mapRegion}
@@ -130,14 +129,14 @@ class Main extends React.Component {
             Keyboard.dismiss();
           }}
         >
-          {this.state.clinicList.map((clinic) => (
+          {this.state.clinicList.map((clinic, i) => (
             <Marker
               coordinate={{latitude: clinic.lat, longitude: clinic.lon}}
               title={clinic.name}
+              key={i}
             />
           ))}
         </MapView>
-        // Search Elements (Bar and suggestions), offset 10% from top
         <View style={{top: "10%", position: "absolute", width: "90%"}} >
           <Item regular style={styles.searchbox}>
             <Icon active name="ios-search"/>
@@ -145,9 +144,7 @@ class Main extends React.Component {
               onSubmitEditing={(e) => {
                 this._filterByClinicName(e.nativeEvent.text);
                 this._clearSearchSuggestions();
-              }
-              }
-
+              }}
               clearTextOnFocus
               onChangeText={(searchText) => this._searchSuggestions(searchText)}
               value={this.state.searchText}
@@ -172,7 +169,6 @@ class Main extends React.Component {
           />
 
         </View>
-        // Swiper
         <View style={styles.swiper}>
           <Swiper showsPagination={false} loop={false}>
             {
