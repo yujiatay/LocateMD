@@ -108,61 +108,61 @@ class Main extends React.Component {
     this.setState({
       searchSuggestions: validNames
     });
-  }
+  };
   _clearSearchSuggestions = () => {
     this.setState({searchSuggestions: []});
-  }
+  };
 
   render() {
     return (
       // Overarching container
       <View style={styles.container}>
-      // Map, placed absolutely to occupy entire container
-      <MapView
-        style={{ position: "absolute", width: "100%", height: "100%"}}
-        region={this.state.mapRegion}
-        showsUserLocation={true}
-        customMapStyle={MapStyleDefault}
-        onRegionChangeComplete={this._handleMapRegionChange}
-      />
-      // Search Elements (Bar and suggestions), offset 10% from top
-      <View style={{top: "10%", position: "absolute", width: "80%", height: "30%", flex: 1, alignSelf:"center"}} pointerEvents="box-none">
-        <Item regular style={styles.searchbox}>
-          <Icon active name="ios-search"/>
-          <Input
-            onSubmitEditing={(e) => {
+        // Map, placed absolutely to occupy entire container
+        <MapView
+          style={{ position: "absolute", width: "100%", height: "100%"}}
+          region={this.state.mapRegion}
+          showsUserLocation={true}
+          customMapStyle={MapStyleDefault}
+          onRegionChangeComplete={this._handleMapRegionChange}
+        />
+        // Search Elements (Bar and suggestions), offset 10% from top
+        <View style={{top: "10%", position: "absolute", width: "80%"}} >
+          <Item regular style={styles.searchbox}>
+            <Icon active name="ios-search"/>
+            <Input
+              onSubmitEditing={(e) => {
                 this._filterByClinicName(e.nativeEvent.text);
                 this._clearSearchSuggestions();
               }
-            }
-          onChangeText={(searchText) => this._searchSuggestions(searchText)}
-          value={this.state.searchText}
-          placeholder='Clinics Near Me'
-          style={styles.text}
-        />
-      </Item>
-      <List dataArray={this.state.searchSuggestions}
-        renderRow={(item) =>
-          <ListItem noIndent style={{backgroundColor: "#fff"}}
-            onPress={() => {
-              this._filterByClinicName(item);
-              this._clearSearchSuggestions();
-            }}
-            >
-              <Text style={styles.suggestions}>{item}</Text>
-            </ListItem>
-          }>
-        </List>
-      </View>
-      // Swiper
-      <View style={styles.swiper}>
-        <Swiper showsPagination={false} loop={false}>
-          {
-            this.state.clinicList.map((item, i) =>
-            <ClinicInfo
-              clinic={item}
-              navigation={this.props.navigation}
-              key={i}/>)
+              }
+              onChangeText={(searchText) => this._searchSuggestions(searchText)}
+              value={this.state.searchText}
+              placeholder='Clinics Near Me'
+              style={styles.text}
+            />
+          </Item>
+          <List dataArray={this.state.searchSuggestions}
+                renderRow={(item) =>
+                  <ListItem noIndent style={{backgroundColor: "#fff"}}
+                            onPress={() => {
+                              this._filterByClinicName(item);
+                              this._clearSearchSuggestions();
+                            }}
+                  >
+                    <Text style={styles.suggestions}>{item}</Text>
+                  </ListItem>
+                }>
+          </List>
+        </View>
+        // Swiper
+        <View style={styles.swiper}>
+          <Swiper showsPagination={false} loop={false}>
+            {
+              this.state.clinicList.map((item, i) =>
+                <ClinicInfo
+                  clinic={item}
+                  navigation={this.props.navigation}
+                  key={i}/>)
             }
           </Swiper>
         </View>
@@ -184,11 +184,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
   },
   searchbox: {
-
     backgroundColor: '#fff',
     zIndex: 10,
     borderStyle: 'solid',
@@ -202,6 +201,8 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   swiper: {
+    position: 'absolute',
+    bottom: 0,
     zIndex: 10,
     height: 200,
     width: '100%',
