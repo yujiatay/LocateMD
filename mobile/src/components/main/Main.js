@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Platform, Text, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, View, Dimensions, Platform, Text, TouchableOpacity, Button, FlatList, Keyboard, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { MapView, Constants, Location, Permissions } from "expo";
+import { Marker } from 'react-native-maps';
 import { Item, Input, Icon, Card, List, ListItem } from 'native-base';
 import Swiper from 'react-native-swiper';
 import withAuthorization from '../auth/withAuthorization';
@@ -124,9 +125,20 @@ class Main extends React.Component {
           showsUserLocation={true}
           customMapStyle={MapStyleDefault}
           onRegionChangeComplete={this._handleMapRegionChange}
-        />
+          onPress={() => {
+            this._clearSearchSuggestions();
+            Keyboard.dismiss();
+          }}
+        >
+          {this.state.clinicList.map((clinic) => (
+            <Marker
+              coordinate={{latitude: clinic.lat, longitude: clinic.lon}}
+              title={clinic.name}
+            />
+          ))}
+        </MapView>
         // Search Elements (Bar and suggestions), offset 10% from top
-        <View style={{top: "10%", position: "absolute", width: "80%"}} >
+        <View style={{top: "10%", position: "absolute", width: "90%"}} >
           <Item regular style={styles.searchbox}>
             <Icon active name="ios-search"/>
             <Input
@@ -135,24 +147,30 @@ class Main extends React.Component {
                 this._clearSearchSuggestions();
               }
               }
+
+              clearTextOnFocus
               onChangeText={(searchText) => this._searchSuggestions(searchText)}
               value={this.state.searchText}
-              placeholder='Clinics Near Me'
+              placeholder='Search Clinics'
               style={styles.text}
             />
           </Item>
-          <List dataArray={this.state.searchSuggestions}
-                renderRow={(item) =>
-                  <ListItem noIndent style={{backgroundColor: "#fff"}}
-                            onPress={() => {
-                              this._filterByClinicName(item);
-                              this._clearSearchSuggestions();
-                            }}
-                  >
-                    <Text style={styles.suggestions}>{item}</Text>
-                  </ListItem>
-                }>
-          </List>
+          <FlatList
+            data={this.state.searchSuggestions}
+            renderItem={({item}) =>
+              <ListItem noIndent style={{backgroundColor: "#fff"}}
+                        onPress={() => {
+                          this._filterByClinicName(item);
+                          this._clearSearchSuggestions();
+                          Keyboard.dismiss();
+                        }}
+              >
+                <Text style={styles.suggestions}>{item}</Text>
+              </ListItem>
+            }
+            keyboardShouldPersistTaps='always'
+          />
+
         </View>
         // Swiper
         <View style={styles.swiper}>
