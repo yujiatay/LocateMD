@@ -56,11 +56,6 @@ export const parseClinics = data => {
 
       let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
 
-      // // TODO: temp hack to resolve poor estimates
-      if (timeEstimateString === "Poor estimate, please refresh to get updated estimate.") {
-        updateClinicEstimate(i);
-      }
-
       return {
         name: srcClinic.clinicName,
         address: srcClinic.address.blockNo + " " + srcClinic.address.streetName +
