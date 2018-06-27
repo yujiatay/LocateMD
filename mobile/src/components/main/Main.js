@@ -54,7 +54,7 @@ class Main extends React.Component {
     }, function(error) {
       console.log(error);
     });
-  };
+  }
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
@@ -131,7 +131,7 @@ class Main extends React.Component {
         >
           {this.state.clinicList.map((clinic, i) => (
             <Marker
-              coordinate={{latitude: clinic.lat, longitude: clinic.lon}}
+              coordinate={{latitude: clinic.coords.lat, longitude: clinic.coords.lon}}
               title={clinic.name}
               key={i}
             />

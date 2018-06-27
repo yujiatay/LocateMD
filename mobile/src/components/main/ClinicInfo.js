@@ -14,7 +14,7 @@ const ClinicInfo = ({ clinic, navigation }) => {
             {/*<Left>*/}
               {/*<Thumbnail source={clinicIconPlaceholder}/>*/}
               <Body>
-                <Text style={[styles.text, { fontSize: 24 }]}>{clinic.name}</Text>
+                <Text style={[styles.text, { fontSize: 24 }]}>{clinic.clinicName}</Text>
               </Body>
             {/*</Left>*/}
           </CardItem>
@@ -32,15 +32,15 @@ const ClinicInfo = ({ clinic, navigation }) => {
             </Left>
             <Left>
               <Icon name="md-car"/>
-              <Text style={styles.text}>22 min</Text>
+              <Text style={styles.text}>10 min</Text>
             </Left>
             <Left>
               <Icon name="md-bus"/>
-              <Text style={styles.text}>22 min</Text>
+              <Text style={styles.text}>16 min</Text>
             </Left>
             <Left>
               <Icon name="md-subway"/>
-              <Text style={styles.text}>22 min</Text>
+              <Text style={styles.text}>15 min</Text>
             </Left>
           </CardItem>
           <CardItem style={styles.cardBottom}>
@@ -51,7 +51,12 @@ const ClinicInfo = ({ clinic, navigation }) => {
             </Button>
             </Left>
             <Right>
-              <Button transparent onPress={() => {navigation.dispatch(NavigationActions.navigate({ routeName: 'BookScreen' }))}}>
+              <Button transparent
+                      onPress={() => {
+                        navigation.dispatch(NavigationActions.navigate({
+                          routeName: 'BookScreen',
+                          params: { clinic: clinic }
+                      }))}}>
                 <Text style={styles.text}>Book</Text>
               </Button>
             </Right>

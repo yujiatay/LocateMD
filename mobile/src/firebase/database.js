@@ -57,17 +57,22 @@ export const parseClinics = data => {
       let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
 
       return {
-        name: srcClinic.clinicName,
-        address: srcClinic.address.blockNo + " " + srcClinic.address.streetName +
-        " S" + srcClinic.address.postalCode,
-        // TODO: figure out how to display opening hours nicely
-        openingHours: "9am to 5pm",
-        contactNumber: srcClinic.contactNumber,
         estimatedWaitTime: timeEstimateString,
         clinicID: i,
-        lon: srcClinic.coords.lon,
-        lat: srcClinic.coords.lat
-      };
+        ...data[i]
+      }
+      // return {
+      //   name: srcClinic.clinicName,
+      //   address: srcClinic.address.blockNo + " " + srcClinic.address.streetName +
+      //   " S" + srcClinic.address.postalCode,
+      //   // TODO: figure out how to display opening hours nicely
+      //   openingHours: "9am to 5pm",
+      //   contactNumber: srcClinic.contactNumber,
+      //   estimatedWaitTime: timeEstimateString,
+      //   clinicID: i,
+      //   lon: srcClinic.coords.lon,
+      //   lat: srcClinic.coords.lat
+      // };
     });
   } else {
     return null;

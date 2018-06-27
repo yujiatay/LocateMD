@@ -31,14 +31,20 @@ const MainStack = createStackNavigator({
     })
   },
   BookScreen: {
-    screen: Booking
+    screen: Booking,
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: "#fff",
+        // shadowColor: 'transparent',
+        // elevation: 0
+      }
+    }
   }
 }, {
   initialRouteName: 'MainScreen',
   navigationOptions: {
     mode: 'modal',
-    headerMode: 'screen',
-
+    headerMode: 'float',
   }
 });
 
