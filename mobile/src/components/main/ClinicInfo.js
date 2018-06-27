@@ -71,10 +71,8 @@ const styles = StyleSheet.create({
   },
   slide: {
     flex: 1,
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 10,
+    width: '90%',
+    bottom: 5,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
