@@ -38,13 +38,13 @@ class Main extends React.Component {
     } else {
       this._getLocationAsync();
       this._getClinics();
-      // Location.watchPositionAsync({ timeInterval: 600, distanceInterval: 50 }, this._locationChanged);
     }
   }
   componentWillUnmount() {
     this.clinicsRef.off();
   }
   _getClinics = () => {
+    // TODO: Store object using redux
     this.clinicsRef.on("value", (snapshot) => {
       let newData = snapshot.val();
       this.setState({
@@ -54,7 +54,7 @@ class Main extends React.Component {
     }, function(error) {
       console.log(error);
     });
-  }
+  };
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
@@ -70,8 +70,6 @@ class Main extends React.Component {
         longitude: location.coords.longitude
       }
     }));
-  };
-  _locationChanged = (location) => {
   };
   _handleMapRegionChange = mapRegion => {
     this.setState({ mapRegion });
@@ -93,7 +91,6 @@ class Main extends React.Component {
     });
     // return validClinics;
   };
-
   _searchSuggestions = (searchString) => {
     if (searchString === "") {
       return this._clearSearchSuggestions();
@@ -113,7 +110,6 @@ class Main extends React.Component {
   _clearSearchSuggestions = () => {
     this.setState({searchSuggestions: []});
   };
-
   render() {
     return (
       // Overarching container
@@ -132,7 +128,7 @@ class Main extends React.Component {
           {this.state.clinicList.map((clinic, i) => (
             <Marker
               coordinate={{latitude: clinic.coords.lat, longitude: clinic.coords.lon}}
-              title={clinic.name}
+              title={clinic.clinicName}
               key={i}
             />
           ))}

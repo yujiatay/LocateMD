@@ -8,6 +8,7 @@ import { middleware } from '../navigators/AppNavigator';
 const persistConfig = {
   key: 'root',
   storage: storage,
+  // blacklist: ['nav']
 };
 const middlewares = [];
 middlewares.push(middleware);

@@ -1,30 +1,19 @@
 import React from 'react';
 import { StyleSheet, View } from "react-native";
-import { Card, CardItem, Text, Left, Right, Thumbnail, Body, Button, Icon } from 'native-base';
-import clinicIconPlaceholder from '../../assets/favicon_64x64.png';
+import { Card, CardItem, Text, Left, Right, Body, Button, Icon } from 'native-base';
 import {NavigationActions} from "react-navigation";
 
+// TODO: move database logic to parent
 import { database } from "../../firebase";
-// Is there a better place for this?
 const ClinicInfo = ({ clinic, navigation }) => {
   return (
     <View style={styles.container}>
         <Card style={styles.slide}>
           <CardItem style={styles.card}>
-            {/*<Left>*/}
-              {/*<Thumbnail source={clinicIconPlaceholder}/>*/}
               <Body>
                 <Text style={[styles.text, { fontSize: 24 }]}>{clinic.clinicName}</Text>
               </Body>
-            {/*</Left>*/}
           </CardItem>
-          {/*<CardItem style={styles.card}>*/}
-            {/*<Body>*/}
-              {/*<Text style={styles.text}>Address: {clinic.address}</Text>*/}
-              {/*<Text style={styles.text}>Opening hours: {clinic.openingHours}</Text>*/}
-              {/*<Text style={styles.text}>Phone: {clinic.contactNumber}</Text>*/}
-            {/*</Body>*/}
-          {/*</CardItem>*/}
           <CardItem style={[styles.card, {flexDirection: 'row'}]}>
             <Left>
               <Icon name="md-walk"/>
