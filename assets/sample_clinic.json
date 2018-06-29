@@ -13,6 +13,10 @@
   "email" : "phuajohn0@gmail.com",
   "estimatedServiceTime" : 600000,
   "nextEstimate" : 1529770481508,
+  "bookedSlots": {
+    "23124325455" : "3123124124124",
+    "312312515124" : "321412512512",
+  },
   "openingHours" : {
     "fri" : [ {
       "end" : "1230",
