@@ -110,7 +110,13 @@ export const bookAppointment = (timestamp, clinicID) => {
     startTime: timestamp,
     isBooking: true
   };
-  appointmentRef.set(newAppointment);
+  return appointmentRef.set(newAppointment, (error) => {
+    if (error) {
+      return null;
+    } else {
+      return appointmentRef;
+    }
+  });
 };
 
 export const joinQueue = (clinicID) => {
@@ -123,5 +129,11 @@ export const joinQueue = (clinicID) => {
     startTime: Date.now(),
     isBooking: false
   };
-  clinicApptRef.set(newAppointment);
+  return appointmentRef.set(newAppointment, (error) => {
+    if (error) {
+      return null;
+    } else {
+      return appointmentRef;
+    }
+  });
 };
