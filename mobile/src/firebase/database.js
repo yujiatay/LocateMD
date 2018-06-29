@@ -49,17 +49,17 @@ export const getAppointments = () => {
   })
 };
 
-export const parseClinics = data => {
-  if (data != null) {
-    return Object.keys(data).map(i => {
-      let srcClinic = data[i];
+export const parseClinics = dataObj => {
+  if (dataObj != null) {
+    return Object.keys(dataObj).map(i => {
+      let srcClinic = dataObj[i];
 
       let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
 
       return {
         estimatedWaitTime: timeEstimateString,
         clinicID: i,
-        ...data[i]
+        ...dataObj[i]
       }
       // return {
       //   name: srcClinic.clinicName,

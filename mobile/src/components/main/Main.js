@@ -76,14 +76,12 @@ class Main extends React.Component {
   };
 
   _filterByClinicName = (searchString) => {
-    let validClinics = [];
+    let validClinics = {};
     let clinicObj = this.state.clinicsObj;
     let regSearch = new RegExp(searchString, 'i' );
     Object.keys(clinicObj).forEach((key) => {
       if (clinicObj[key].clinicName.search(regSearch) !== -1) {
-        let validClinic = clinicObj[key];
-        validClinic.key = key;
-        validClinics.push(validClinic);
+        validClinics[key] = {...clinicObj[key]};
       }
     });
     this.setState({
