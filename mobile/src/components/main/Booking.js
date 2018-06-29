@@ -152,22 +152,24 @@ class Booking extends React.Component {
           <BookingSlots bookingSlotHandler={this.bookingSlotHandler} timeslots={datelib.parseForDisplay(this.state.timeslots)}/>
         </View>
         <View style={styles.buttonContainer}>
-          <Card style={styles.card}>
-            <CardItem button onPress={() => database.joinQueue(clinic.clinicID)} style={styles.cardItem}>
-              <Body style={styles.cardItem}>
-              <Text style={styles.cardText}>Queue now</Text>
-              </Body>
-            </CardItem>
-          </Card>
-          <Card style={styles.card}>
-            <CardItem button
-                      onPress={this._bookAppointment}
-                      style={styles.cardItem}>
-              <Body style={styles.cardItem}>
-              <Text style={styles.cardText}>Book in advance</Text>
-              </Body>
-            </CardItem>
-          </Card>
+          { this.state.chosenSlot < 0
+          ? <Card style={styles.card}>
+              <CardItem button onPress={() => database.joinQueue(clinic.clinicID)} style={styles.cardItem}>
+                <Body style={styles.cardItem}>
+                <Text style={styles.cardText}>Queue now</Text>
+                </Body>
+              </CardItem>
+            </Card>
+          : <Card style={styles.card}>
+              <CardItem button
+                        onPress={this._bookAppointment}
+                        style={styles.cardItem}>
+                <Body style={styles.cardItem}>
+                <Text style={styles.cardText}>Book in advance</Text>
+                </Body>
+              </CardItem>
+            </Card>
+          }
         </View>
       </View>
     );
