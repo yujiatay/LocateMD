@@ -110,13 +110,7 @@ export const bookAppointment = (timestamp, clinicID) => {
     startTime: timestamp,
     isBooking: true
   };
-  return appointmentRef.set(newAppointment, (error) => {
-    if (error) {
-      return null;
-    } else {
-      return appointmentRef;
-    }
-  });
+  return appointmentRef.set(newAppointment);
 };
 
 export const joinQueue = (clinicID) => {
@@ -131,9 +125,11 @@ export const joinQueue = (clinicID) => {
   };
   return appointmentRef.set(newAppointment, (error) => {
     if (error) {
-      return null;
+      return {error: error, appointment: null};
     } else {
-      return appointmentRef;
+      return appointmentRef.once('value', (snapshot) => {
+        return {error: null, appointment: snapshot.val()};
+      });
     }
   });
 };
