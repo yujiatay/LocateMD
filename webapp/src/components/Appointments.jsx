@@ -62,7 +62,7 @@ class AppointmentsPage extends React.Component {
     });
   }
   componentWillUnmount() {
-    this.appointmentsRef.off();
+    this.appointmentsGenericRef.off();
   }
 }
 
