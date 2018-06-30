@@ -39,7 +39,7 @@ export const parseAppointmentsForDisplay = data => {
       return {
         date:
         ((dateTime.getDate() < 10) ? '0' : '') + dateTime.getDate() + "-" +
-        ((dateTime.getMonth() < 10) ? '0' : '') + dateTime.getMonth() + "-" +
+        ((dateTime.getMonth() < 9) ? '0' : '') + (dateTime.getMonth() + 1) + "-" +
         dateTime.getFullYear(),
         time:
         ((dateTime.getHours() < 10) ? '0' : '') + dateTime.getHours() + ":" +
