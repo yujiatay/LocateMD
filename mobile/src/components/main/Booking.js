@@ -94,7 +94,8 @@ class Booking extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      timeslots: datelib.filterDaySlots((datelib.genDaySlots()), this.props.navigation.state.params.clinic.bookedSlots),
+      timeslots: datelib.filterDaySlots((datelib.genBookingSlots(this.props.navigation.state.params.clinic.openingHours)),
+                                        this.props.navigation.state.params.clinic.bookedSlots),
       chosenSlot: -1,
       loading: false,
       bookingResult: ''
