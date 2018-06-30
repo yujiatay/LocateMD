@@ -59,3 +59,44 @@ export const parseForDisplay = (slotStamps) => {
   return ret.concat(formattedSlots);
 };
 
+export const getOpeningHoursForToday = (openingHours) => {
+  let day = new Date(Date.now()).getDay();
+  let schedule;
+  switch(day) { // Sunday - Saturday : 0 - 6
+    case 0:
+      schedule = openingHours.sun;
+      break;
+    case 1:
+      schedule = openingHours.mon;
+      break;
+    case 2:
+      schedule = openingHours.tue;
+      break;
+    case 3:
+      schedule = openingHours.wed;
+      break;
+    case 4:
+      schedule = openingHours.thu;
+      break;
+    case 5:
+      schedule = openingHours.fri;
+      break;
+    case 6:
+      schedule = openingHours.sat;
+      break;
+  }
+  function formatTime(time) {
+    let hour = time.substring(0, 2);
+    if (hour < 12) { // if < 12, hour will be in format "0X"
+      hour = hour.substring(1);
+    }
+    let minute = time.substring(2);
+    return '' + format24Hour(hour) + ':' + minute + get24HourSuffix(hour);
+
+  }
+  let hours = '';
+  for (let i = 0; i < schedule.length; i++) {
+    hours += formatTime(schedule[i].start) + " - " + formatTime(schedule[i].end) + ", "
+  }
+  return hours.slice(0, -2); // remove the last ", "
+};
