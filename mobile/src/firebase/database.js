@@ -43,19 +43,17 @@ export const getInfo = (authUser) => {
 export const getAppointments = (authUser) => {
   let id = authUser.uid;
   let appointmentRef = database.ref('appointments').orderByChild('patient').equalTo(id);
-  let objOfAppointmentObjs = null;
   return appointmentRef.once('value').then((snapshot) => {
-    let arr = [];
     objOfAppointmentObjs = snapshot.val();
     if (objOfAppointmentObjs != null) {
-      arr = Object.keys(objOfAppointmentObjs).map(i => {
+      return Object.keys(objOfAppointmentObjs).map(i => {
         return objOfAppointmentObjs[i];
       })
     }
-    return arr;
-  }, (error) => {
     return [];
-  })
+  }, err => {
+    return [];
+  });
 };
 
 export const parseClinics = dataObj => {
@@ -136,9 +134,9 @@ export const joinQueue = (clinicID) => {
     if (error) {
       return {error: error, appointment: null};
     } else {
-      return appointmentRef.once('value', (snapshot) => {
+      return appointmentRef.once('value').then((snapshot) => {
         return {error: null, appointment: snapshot.val()};
-      });
+      })
     }
   });
 };
