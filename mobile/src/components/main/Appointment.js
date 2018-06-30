@@ -4,12 +4,16 @@ import { connect } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import { database } from "../../firebase";
+import { getDateTime } from '../../datelib';
+
 
 class AppointmentCard extends React.Component {
   constructor(props) {
     super(props);
   }
-  _generateDateTime(datetime) {
+  _generateDateTime(millisec) {
+    let dateTime  = new Date(millisec);
+    return getDateTime(dateTime);
   }
   render() {
     const appt = this.props.appointment;
@@ -24,7 +28,7 @@ class AppointmentCard extends React.Component {
         <View style={{flexDirection:'row', margin: 10, justifyContent: 'space-between'}}>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
             <Ionicons name="md-calendar" size={30} color="#525a66"/>
-            <Text style={{fontFamily: 'Roboto_light', fontSize: 14, marginLeft: 10}}>7 July 18 5.00PM</Text>
+            <Text style={{fontFamily: 'Roboto_light', fontSize: 14, marginLeft: 10}}>{this._generateDateTime(appt.startTime)}</Text>
           </View>
           <View style={{justifyContent: 'flex-end'}}>
             <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center'}}>

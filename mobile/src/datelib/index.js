@@ -63,69 +63,69 @@ export const filterDaySlots = (daySlots, clinicBookingsObj) => {
   };
 
 
-  function pad(number) {
-    if (number < 10) {
-      return '0' + number;
-    }
-    return number;
+function pad(number) {
+  if (number < 10) {
+    return '0' + number;
   }
+  return number;
+}
 
-  function format24Hour(hour) {
-    if (hour === 0) {
-      return 12;
-    } else if (hour > 12) {
-      return hour - 12;
-    } else {
-      return hour;
-    }
+function format24Hour(hour) {
+  if (hour === 0) {
+    return 12;
+  } else if (hour > 12) {
+    return hour - 12;
+  } else {
+    return hour;
   }
+}
 
-  function get24HourSuffix(hour) {
-    return hour >= 12 ? 'PM' : 'AM'
+function get24HourSuffix(hour) {
+  return hour >= 12 ? 'PM' : 'AM'
+}
+
+function selectOpeningHoursNow(openingHoursObj) {
+  let day = new Date(Date.now()).getDay();
+  let schedule;
+  switch(day) { // Sunday - Saturday : 0 - 6
+    case 0:
+    schedule = openingHoursObj.sun;
+    break;
+    case 1:
+    schedule = openingHoursObj.mon;
+    break;
+    case 2:
+    schedule = openingHoursObj.tue;
+    break;
+    case 3:
+    schedule = openingHoursObj.wed;
+    break;
+    case 4:
+    schedule = openingHoursObj.thu;
+    break;
+    case 5:
+    schedule = openingHoursObj.fri;
+    break;
+    case 6:
+    schedule = openingHoursObj.sat;
+    break;
   }
-
-  function selectOpeningHoursNow(openingHoursObj) {
-    let day = new Date(Date.now()).getDay();
-    let schedule;
-    switch(day) { // Sunday - Saturday : 0 - 6
-      case 0:
-      schedule = openingHoursObj.sun;
-      break;
-      case 1:
-      schedule = openingHoursObj.mon;
-      break;
-      case 2:
-      schedule = openingHoursObj.tue;
-      break;
-      case 3:
-      schedule = openingHoursObj.wed;
-      break;
-      case 4:
-      schedule = openingHoursObj.thu;
-      break;
-      case 5:
-      schedule = openingHoursObj.fri;
-      break;
-      case 6:
-      schedule = openingHoursObj.sat;
-      break;
-    }
-    return schedule;
-  }
+  return schedule;
+}
 
 
-  export const parseForDisplay = (slotStamps) => {
-    let ret = ["Real-time Queue"];
-    let formattedSlots = slotStamps.map((slotStamp) => {
-      let slotDate = new Date(slotStamp);
-      return '' + format24Hour(slotDate.getHours()) + ':' +
-      pad(slotDate.getMinutes()) + get24HourSuffix(slotDate.getHours());
-    });
-    return ret.concat(formattedSlots);
-  };
+export const parseForDisplay = (slotStamps) => {
+  let ret = ["Real-time Queue"];
+  let formattedSlots = slotStamps.map((slotStamp) => {
+    let slotDate = new Date(slotStamp);
+    return '' + format24Hour(slotDate.getHours()) + ':' +
+    pad(slotDate.getMinutes()) + get24HourSuffix(slotDate.getHours());
+  });
+  return ret.concat(formattedSlots);
+};
 
 
-  export const getOpeningHoursForToday = (openingHours) => {
+export const getOpeningHoursForToday = (openingHours) => {
     let day = new Date(Date.now()).getDay();
     let schedule = selectOpeningHoursNow(openingHours);
     function formatTime(time) {
@@ -142,4 +142,43 @@ export const filterDaySlots = (daySlots, clinicBookingsObj) => {
     hours += formatTime(schedule[i].start) + " - " + formatTime(schedule[i].end) + ", "
   }
   return hours.slice(0, -2); // remove the last ", "
+};
+
+function numberToMonth(number) {
+  switch(number) {
+    case 1:
+      return 'Jan';
+    case 2:
+      return 'Feb';
+    case 3:
+      return 'Mar';
+    case 4:
+      return 'Apr';
+    case 5:
+      return 'May';
+    case 6:
+      return 'Jun';
+    case 7:
+      return 'Jul';
+    case 8:
+      return 'Aug';
+    case 9:
+      return 'Sep';
+    case 10:
+      return 'Oct';
+    case 11:
+      return 'Nov';
+    case 12:
+      return 'Dec';
+  }
+}
+
+export const getDateTime = (datetimestring) => {
+  let dateObj = new Date(datetimestring);
+  let datetime = '';
+  datetime += dateObj.getDate() + ' ' + numberToMonth(dateObj.getMonth() + 1) + ' '
+    + dateObj.getFullYear() + ' ';
+  datetime += format24Hour(dateObj.getHours()) + ':' + pad(dateObj.getMinutes())
+    + get24HourSuffix(dateObj.getHours());
+  return datetime;
 };
