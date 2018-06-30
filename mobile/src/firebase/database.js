@@ -30,9 +30,8 @@ export const updateClinicEstimate = (clinicID) => {
   });
 };
 
-export const getInfo = () => {
-
-  id = auth.currentUser.uid;
+export const getInfo = (authUser) => {
+  id = authUser.uid;
   database
   .ref(`patients/${id}`)
   .once('value')
@@ -41,11 +40,21 @@ export const getInfo = () => {
   });
 };
 
-export const getAppointments = () => {
-  id = auth.currentUser.uid;
+export const getAppointments = (authUser) => {
+  let id = authUser.uid;
   let appointmentRef = database.ref('appointments').orderByChild('patient').equalTo(id);
-  appointmentRef.once('value', (snapshot) => {
-    return snapshot.val();
+  let objOfAppointmentObjs = null;
+  return appointmentRef.once('value', (snapshot) => {
+    let arr = [];
+    objOfAppointmentObjs = snapshot.val();
+    if (objOfAppointmentObjs != null) {
+      arr = Object.keys(objOfAppointmentObjs).map(i => {
+        return objOfAppointmentObjs[i];
+      })
+    }
+    return arr;
+  }, (error) => {
+    throw error;
   })
 };
 

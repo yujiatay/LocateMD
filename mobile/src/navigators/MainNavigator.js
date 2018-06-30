@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Main from '../components/main/Main';
 import DrawerSideBar from '../components/main/DrawerSideBar';
 import Booking from '../components/main/Booking';
+import Appointment from '../components/main/Appointment';
 
 const styles = StyleSheet.create({
   menu: {
@@ -48,8 +49,28 @@ const MainStack = createStackNavigator({
   }
 });
 
+const AppointmentStack = createStackNavigator({
+  AppointmentScreen: {
+    screen: Appointment,
+    navigationOptions: ({navigation}) => ({
+      headerLeft:
+        <TouchableHighlight underlayColor='transparent' style={styles.menu} onPress={() => {navigation.dispatch(DrawerActions.toggleDrawer())}}>
+          <Icon name="ios-menu-outline" size={30} color="#000" />
+        </TouchableHighlight>,
+      title: 'Your Appointments'
+    })
+  }
+}, {
+  initialRouteName: 'AppointmentScreen',
+  navigationOptions: {
+    mode: 'card',
+    headerMode: 'screen'
+  }
+});
+
 const MainNavigator = createDrawerNavigator({
-  Home: { screen: MainStack }
+  Home: { screen: MainStack },
+  Appointments: { screen: AppointmentStack }
 }, {
   initialRouteName: 'Home',
   contentComponent: DrawerSideBar,
