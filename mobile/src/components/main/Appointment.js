@@ -54,6 +54,7 @@ class Appointment extends React.Component {
   }
   _getAppointments = async () => {
     let response = await database.getAppointments(this.props.authUser);
+    response.sort((a, b) => parseFloat(a.startTime) - parseFloat(b.startTime));
     if (response != null) {
       this.setState({ appointments: response });
     }
