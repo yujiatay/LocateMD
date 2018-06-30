@@ -15,7 +15,8 @@ class AppointmentCard extends React.Component {
     const appt = this.props.appointment;
     return (
       <View style={{width: '100%', height: null, elevation: 3,
-        backgroundColor: '#fff', borderRadius: 10, flexDirection: 'column'}}>
+        backgroundColor: '#fff', borderRadius: 10, flexDirection: 'column',
+        marginBottom: 20}}>
         <View style={{margin:10}}>
           <Text style={{fontFamily: 'Roboto_light', fontSize: 24}}>{appt.clinic}</Text>
         </View>
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     padding: 20,
     // backgroundColor: '#fff'
   },
