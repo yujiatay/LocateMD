@@ -159,6 +159,7 @@ class Main extends React.Component {
                 <Text style={styles.suggestions}>{item}</Text>
               </ListItem>
             }
+            keyExtractor={(item, index) => index.toString()}
             keyboardShouldPersistTaps='always'
           />
 
