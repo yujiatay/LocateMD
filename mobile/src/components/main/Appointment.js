@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
@@ -18,7 +18,7 @@ class AppointmentCard extends React.Component {
         backgroundColor: '#fff', borderRadius: 10, flexDirection: 'column',
         marginBottom: 20}}>
         <View style={{margin:10}}>
-          <Text style={{fontFamily: 'Roboto_light', fontSize: 24}}>{appt.clinic}</Text>
+          <Text style={{fontFamily: 'Roboto_light', fontSize: 24}}>{appt.clinicName}</Text>
         </View>
 
         <View style={{flexDirection:'row', margin: 10, justifyContent: 'space-between'}}>
@@ -50,20 +50,19 @@ class Appointment extends React.Component {
   }
   _getAppointments = async () => {
     let response = await database.getAppointments(this.props.authUser);
-    throw response
     if (response != null) {
       this.setState({ appointments: response });
     }
   };
   render() {
     return (
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         {
-          this.state.appointments.map(appointment =>
-            <AppointmentCard appointment={appointment}/>
+          this.state.appointments.map((appointment, i) =>
+            <AppointmentCard appointment={appointment} key={i}/>
           )
         }
-      </View>
+      </ScrollView>
     );
   }
 }

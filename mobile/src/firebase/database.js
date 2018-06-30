@@ -44,7 +44,7 @@ export const getAppointments = (authUser) => {
   let id = authUser.uid;
   let appointmentRef = database.ref('appointments').orderByChild('patient').equalTo(id);
   let objOfAppointmentObjs = null;
-  return appointmentRef.once('value', (snapshot) => {
+  return appointmentRef.once('value').then((snapshot) => {
     let arr = [];
     objOfAppointmentObjs = snapshot.val();
     if (objOfAppointmentObjs != null) {
@@ -54,7 +54,7 @@ export const getAppointments = (authUser) => {
     }
     return arr;
   }, (error) => {
-    throw error;
+    return [];
   })
 };
 
