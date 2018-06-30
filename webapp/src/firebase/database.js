@@ -1,19 +1,19 @@
 import { database, auth } from './firebase';
 
 export const updateInfo = (id, email, contactNumber = '') =>
-  database.ref(`clinics/${id}`).set(
-    {
-      contactNumber: contactNumber,
-      email: email
-    },
-    function(error) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('CHANGED');
-      }
+database.ref(`clinics/${id}`).set(
+  {
+    contactNumber: contactNumber,
+    email: email
+  },
+  function(error) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('CHANGED');
     }
-  );
+  }
+);
 
 // GETTING DATA
 
@@ -38,13 +38,14 @@ export const parseAppointmentsForDisplay = data => {
       let dateTime = new Date(srcAppt.startTime);
       return {
         date:
-          ((dateTime.getDate() < 10) ? '0' : '') + dateTime.getDate() + "-" +
-          ((dateTime.getMonth() < 10) ? '0' : '') + dateTime.getMonth() + "-" +
-          dateTime.getFullYear() + " " +
-          ((dateTime.getHours() < 10) ? '0' : '') + dateTime.getHours() + ":" +
-          ((dateTime.getMinutes() < 10) ? '0' : '') + dateTime.getMinutes() + ":" +
-          ((dateTime.getSeconds() < 10) ? '0' : '') + dateTime.getSeconds(),
-        patient: srcAppt.patient
+        ((dateTime.getDate() < 10) ? '0' : '') + dateTime.getDate() + "-" +
+        ((dateTime.getMonth() < 10) ? '0' : '') + dateTime.getMonth() + "-" +
+        dateTime.getFullYear(),
+        time:
+        ((dateTime.getHours() < 10) ? '0' : '') + dateTime.getHours() + ":" +
+        ((dateTime.getMinutes() < 10) ? '0' : '') + dateTime.getMinutes() + ":" +
+        ((dateTime.getSeconds() < 10) ? '0' : '') + dateTime.getSeconds(),
+        patient: srcAppt.patientName
       };
     });
   } else {
