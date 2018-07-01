@@ -26,7 +26,6 @@ class Main extends React.Component {
       errorMessage: '',
       clinicsObj: {},
       clinicList: [],
-      searchText: "",
       searchSuggestions: []
     };
   }
@@ -141,7 +140,6 @@ class Main extends React.Component {
               }}
               clearTextOnFocus
               onChangeText={(searchText) => this._searchSuggestions(searchText)}
-              value={this.state.searchText}
               placeholder='Search Clinics'
               style={styles.text}
             />
