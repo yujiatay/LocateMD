@@ -18,9 +18,8 @@ class AppointmentCard extends React.Component {
   render() {
     const appt = this.props.appointment;
     return (
-      <View style={{width: '100%', height: null, elevation: 3,
-        backgroundColor: '#fff', borderRadius: 10, flexDirection: 'column',
-        marginBottom: 20}}>
+      <View style={{flex: 1, elevation: 3, backgroundColor: '#fff',
+        borderRadius: 10, flexDirection: 'column', marginTop: 20}}>
         <View style={{margin:10}}>
           <Text style={{fontFamily: 'Roboto_light', fontSize: 24}}>{appt.clinicName}</Text>
         </View>
@@ -61,13 +60,15 @@ class Appointment extends React.Component {
   };
   render() {
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {
-          this.state.appointments.map((appointment, i) =>
-            <AppointmentCard appointment={appointment} key={i}/>
-          )
-        }
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {
+            this.state.appointments.map((appointment, i) =>
+              <AppointmentCard appointment={appointment} key={i}/>
+            )
+          }
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -79,9 +80,9 @@ export default connect(mapStateToProps)(Appointment);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: 20,
+    // justifyContent: 'center',
+    paddingLeft: 20,
+    paddingRight: 20
     // backgroundColor: '#fff'
   },
 });
