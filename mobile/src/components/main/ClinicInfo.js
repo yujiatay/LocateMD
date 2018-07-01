@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     padding: 10,
+    paddingLeft: 20,
     backgroundColor: '#fff',
     // ios box-shadow
     shadowColor: '#000',
