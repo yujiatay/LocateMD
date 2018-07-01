@@ -19,7 +19,7 @@ class AppointmentCard extends React.Component {
     const appt = this.props.appointment;
     return (
       <View style={{flex: 1, elevation: 3, backgroundColor: '#fff',
-        borderRadius: 10, flexDirection: 'column', marginTop: 20}}>
+        borderRadius: 10, flexDirection: 'column', marginTop: 10, marginBottom: 10}}>
         <View style={{margin:10}}>
           <Text style={{fontFamily: 'Roboto_light', fontSize: 24}}>{appt.clinicName}</Text>
         </View>
