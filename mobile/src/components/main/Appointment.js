@@ -21,7 +21,7 @@ class AppointmentCard extends React.Component {
       <View style={{flex: 1, elevation: 3, backgroundColor: '#fff',
         borderRadius: 10, flexDirection: 'column', marginTop: 10, marginBottom: 10}}>
         <View style={{margin:10}}>
-          <Text style={{fontFamily: 'Roboto_light', fontSize: 24}}>{appt.clinicName}</Text>
+          <Text style={{fontFamily: 'Roboto_light', fontSize: 20}}>{appt.clinicName}</Text>
         </View>
 
         <View style={{flexDirection:'row', margin: 10, justifyContent: 'space-between'}}>
