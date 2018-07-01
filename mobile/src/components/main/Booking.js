@@ -185,13 +185,24 @@ class Booking extends React.Component {
         </View>
         <View style={styles.buttonContainer}>
           { this.state.chosenSlot < 0
-          ? <Card style={styles.card}>
-              <CardItem button onPress={this._joinQueue} style={styles.cardItem}>
-                <Body style={styles.cardItem}>
-                <Text style={styles.cardText}>Queue now</Text>
-                </Body>
-              </CardItem>
-            </Card>
+          ?
+            this.state.isOpen
+            ?
+            <Card style={styles.card}>
+                <CardItem button onPress={this._joinQueue} style={styles.cardItem}>
+                  <Body style={styles.cardItem}>
+                  <Text style={styles.cardText}>Queue now</Text>
+                  </Body>
+                </CardItem>
+              </Card>
+            :
+            <Card style={styles.card}>
+                <CardItem style={styles.cardItem}>
+                  <Body style={styles.cardItem}>
+                  <Text style={styles.cardText}>Clinic queue is closed.</Text>
+                  </Body>
+                </CardItem>
+              </Card>
           : <Card style={styles.card}>
               <CardItem button
                         onPress={this._bookAppointment}
