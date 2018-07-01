@@ -6,9 +6,13 @@ import * as Expo from "expo";
 import WrappedAuthNavigator from './src/navigators/NavigatorWithAuthState';
 import configureStore from './src/reducers/configureStore';
 
-console.ignoredYellowBox = [
-  'Setting a timer'
-];
+if (__DEV__) {
+  console.ignoredYellowBox = [
+    'Setting a timer'
+  ];
+} else {
+  console.disableYellowBox = true;
+}
 
 const { store, persistor } = configureStore();
 class App extends React.Component {
