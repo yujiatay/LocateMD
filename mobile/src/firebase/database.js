@@ -90,15 +90,15 @@ export const parseClinics = dataObj => {
 function resolveEstimatedTime(estimateMilliseconds) {
   if (estimateMilliseconds < 0) {
     if (-estimateMilliseconds > Date.now() + BOOKINGTHRESHOLD) {
-      return "More than 3 hours, try booking instead.";
+      return "Tap to refresh";
     } else {
-      return "Poor estimate, please refresh to get updated estimate.";
+      return "Tap to refresh";
     }
   }
   let estimate = Math.floor((estimateMilliseconds - Date.now()) / 60000);
   if (estimate < 0) {
     if (estimate < OUTDATEDTHRESHOLD) {
-      return "Poor estimate, please refresh to get updated estimate.";
+      return "Tap to refresh";
     } else {
       estimate = 0;
     }

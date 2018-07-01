@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     zIndex: 10,
-    height: 200,
+    height: 150,
     width: '100%',
     backgroundColor: 'transparent',
   },
