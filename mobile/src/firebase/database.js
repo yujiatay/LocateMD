@@ -51,7 +51,8 @@ export const getAppointments = (authUser) => {
       })
     }
     return [];
-  }, err => {
+  })
+  .catch(err => {
     return [];
   });
 };
