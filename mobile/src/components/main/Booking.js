@@ -181,7 +181,8 @@ class Booking extends React.Component {
           <DetailItem name="Address" item={address}/>
           <DetailItem name="Opening hours" item={datelib.getOpeningHoursForToday(clinic.openingHours)}/>
           <DetailItem name="Phone" item={clinic.contactNumber}/>
-          <BookingSlots bookingSlotHandler={this.bookingSlotHandler} timeslots={datelib.parseForDisplay(this.state.timeslots, this.state.isOpen)}/>
+          { this.state.isOpen &&
+          <BookingSlots bookingSlotHandler={this.bookingSlotHandler} timeslots={datelib.parseForDisplay(this.state.timeslots, this.state.isOpen)}/> }
         </View>
         <View style={styles.buttonContainer}>
           { this.state.chosenSlot < 0
