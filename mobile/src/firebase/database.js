@@ -90,7 +90,7 @@ export const parseClinics = dataObj => {
 function resolveEstimatedTime(estimateMilliseconds) {
   if (estimateMilliseconds < 0) {
     if (-estimateMilliseconds > Date.now() + BOOKINGTHRESHOLD) {
-      return "Tap to refresh";
+      return ">3h";
     } else {
       return "Tap to refresh";
     }
