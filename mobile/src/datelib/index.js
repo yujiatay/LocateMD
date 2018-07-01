@@ -62,70 +62,99 @@ export const filterDaySlots = (daySlots, clinicBookingsObj) => {
     })
   };
 
+  export const checkQueueOpening = clinicObj => {
+    let openingHoursObj = clinicObj.openingHours;
+    let openingHours = selectOpeningHoursNow(openingHoursObj);
+    let today = new Date(Date.now());
+    let clinicEstimate = clinicObj.nextEstimate;
 
-function pad(number) {
-  if (number < 10) {
-    return '0' + number;
+    // Next 2 if statements transform the clinic estimate to a timestamp later than now
+    if (clinicEstimate < 0) {
+      clinicEstimate = -clinicEstimate;
+    }
+    if (clinicEstimate < Date.now()) {
+      clinicEstimate = Date.now();
+    }
+    let datetimeHours = openingHours.map((openingPeriod) => {
+      let start = openingPeriod.start;
+      let end = openingPeriod.end;
+      return {
+        start: today.setHours(start.substring(0, 2), start.substring(2), 0, 0),
+        end: today.setHours(end.substring(0, 2), end.substring(2), 0, 0)
+      };
+    });
+    return datetimeHours.reduce((isOpen, openingPeriod) => {
+      let nextEstimateEnd = clinicEstimate + ESTIMATED_APPT_TIME;
+      return isOpen ||
+             (clinicEstimate >= openingPeriod.start && nextEstimateEnd <= openingPeriod.end)
+    }, false);
+  };
+
+
+
+  function pad(number) {
+    if (number < 10) {
+      return '0' + number;
+    }
+    return number;
   }
-  return number;
-}
 
-function format24Hour(hour) {
-  if (hour === 0) {
-    return 12;
-  } else if (hour > 12) {
-    return hour - 12;
-  } else {
-    return hour;
+  function format24Hour(hour) {
+    if (hour === 0) {
+      return 12;
+    } else if (hour > 12) {
+      return hour - 12;
+    } else {
+      return hour;
+    }
   }
-}
 
-function get24HourSuffix(hour) {
-  return hour >= 12 ? 'PM' : 'AM'
-}
-
-function selectOpeningHoursNow(openingHoursObj) {
-  let day = new Date(Date.now()).getDay();
-  let schedule;
-  switch(day) { // Sunday - Saturday : 0 - 6
-    case 0:
-    schedule = openingHoursObj.sun;
-    break;
-    case 1:
-    schedule = openingHoursObj.mon;
-    break;
-    case 2:
-    schedule = openingHoursObj.tue;
-    break;
-    case 3:
-    schedule = openingHoursObj.wed;
-    break;
-    case 4:
-    schedule = openingHoursObj.thu;
-    break;
-    case 5:
-    schedule = openingHoursObj.fri;
-    break;
-    case 6:
-    schedule = openingHoursObj.sat;
-    break;
+  function get24HourSuffix(hour) {
+    return hour >= 12 ? 'PM' : 'AM'
   }
-  return schedule;
-}
+
+  function selectOpeningHoursNow(openingHoursObj) {
+    let day = new Date(Date.now()).getDay();
+    let schedule;
+    switch(day) { // Sunday - Saturday : 0 - 6
+      case 0:
+      schedule = openingHoursObj.sun;
+      break;
+      case 1:
+      schedule = openingHoursObj.mon;
+      break;
+      case 2:
+      schedule = openingHoursObj.tue;
+      break;
+      case 3:
+      schedule = openingHoursObj.wed;
+      break;
+      case 4:
+      schedule = openingHoursObj.thu;
+      break;
+      case 5:
+      schedule = openingHoursObj.fri;
+      break;
+      case 6:
+      schedule = openingHoursObj.sat;
+      break;
+    }
+    return schedule;
+  }
 
 
-export const parseForDisplay = (slotStamps) => {
-  let ret = ["Real-time Queue"];
-  let formattedSlots = slotStamps.map((slotStamp) => {
-    let slotDate = new Date(slotStamp);
-    return '' + format24Hour(slotDate.getHours()) + ':' +
-    pad(slotDate.getMinutes()) + get24HourSuffix(slotDate.getHours());
-  });
-  return ret.concat(formattedSlots);
-};
+  export const parseForDisplay = (slotStamps, isOpen) => {
+    let ret = isOpen ? ["Real-time Queue"] : [];
+    let formattedSlots = slotStamps.map((slotStamp) => {
+      let slotDate = new Date(slotStamp);
+      return '' + format24Hour(slotDate.getHours()) + ':' +
+      pad(slotDate.getMinutes()) + get24HourSuffix(slotDate.getHours());
+    });
+    return ret.concat(formattedSlots);
+  };
 
 
-export const getOpeningHoursForToday = (openingHours) => {
+  export const getOpeningHoursForToday = (openingHours) => {
     let day = new Date(Date.now()).getDay();
     let schedule = selectOpeningHoursNow(openingHours);
     function formatTime(time) {
@@ -147,29 +176,29 @@ export const getOpeningHoursForToday = (openingHours) => {
 function numberToMonth(number) {
   switch(number) {
     case 1:
-      return 'Jan';
+    return 'Jan';
     case 2:
-      return 'Feb';
+    return 'Feb';
     case 3:
-      return 'Mar';
+    return 'Mar';
     case 4:
-      return 'Apr';
+    return 'Apr';
     case 5:
-      return 'May';
+    return 'May';
     case 6:
-      return 'Jun';
+    return 'Jun';
     case 7:
-      return 'Jul';
+    return 'Jul';
     case 8:
-      return 'Aug';
+    return 'Aug';
     case 9:
-      return 'Sep';
+    return 'Sep';
     case 10:
-      return 'Oct';
+    return 'Oct';
     case 11:
-      return 'Nov';
+    return 'Nov';
     case 12:
-      return 'Dec';
+    return 'Dec';
   }
 }
 
@@ -177,8 +206,8 @@ export const getDateTime = (datetimestring) => {
   let dateObj = new Date(datetimestring);
   let datetime = '';
   datetime += dateObj.getDate() + ' ' + numberToMonth(dateObj.getMonth() + 1) + ' '
-    + dateObj.getFullYear() + ' ';
+  + dateObj.getFullYear() + ' ';
   datetime += format24Hour(dateObj.getHours()) + ':' + pad(dateObj.getMinutes())
-    + get24HourSuffix(dateObj.getHours());
+  + get24HourSuffix(dateObj.getHours());
   return datetime;
 };

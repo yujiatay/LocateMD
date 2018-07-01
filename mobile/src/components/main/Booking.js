@@ -81,7 +81,7 @@ class SpinnerOverlay extends React.Component {
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around',
           backgroundColor: '#00000040'}}>
           <View style={{backgroundColor: '#fff', height: 100, width: 100,
-          borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+            borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
             <ActivityIndicator size="large" animating={loading}/>
           </View>
         </View>
@@ -95,7 +95,8 @@ class Booking extends React.Component {
     super(props);
     this.state = {
       timeslots: datelib.filterDaySlots((datelib.genBookingSlots(this.props.navigation.state.params.clinic.openingHours)),
-                                        this.props.navigation.state.params.clinic.bookedSlots),
+      this.props.navigation.state.params.clinic.bookedSlots),
+      isOpen: datelib.checkQueueOpening(this.props.navigation.state.params.clinic),
       chosenSlot: -1,
       loading: false,
       bookingResult: ''
@@ -103,19 +104,25 @@ class Booking extends React.Component {
     this.bookingSlotHandler = this.bookingSlotHandler.bind(this);
   }
   bookingSlotHandler(chosenSlot) {
-    this.setState({
-      chosenSlot: parseInt(chosenSlot) - 1
-    });
+    if (this.state.isOpen) {
+      this.setState({
+        chosenSlot: parseInt(chosenSlot) - 1
+      });
+    } else {
+      this.setState({
+        chosenSlot: parseInt(chosenSlot)
+      });
+    }
   }
   _bookAppointment = async () => {
     this.setState({ loading : true });
     let response = await database.bookAppointment(this.state.timeslots[this.state.chosenSlot],
       this.props.navigation.state.params.clinic.clinicID);
-    setTimeout(() => {
-      this.setState({ loading: false, bookingResult: response === null ? false : true });
-      this.popupDialog.show();
-    }, 2500);
-  };
+      setTimeout(() => {
+        this.setState({ loading: false, bookingResult: response === null ? false : true });
+        this.popupDialog.show();
+      }, 2500);
+    };
   _closeDialog = () => {
     this.popupDialog.dismiss();
     this.props.navigation.goBack();
@@ -154,7 +161,7 @@ class Booking extends React.Component {
           <DetailItem name="Address" item={address}/>
           <DetailItem name="Opening hours" item={datelib.getOpeningHoursForToday(clinic.openingHours)}/>
           <DetailItem name="Phone" item={clinic.contactNumber}/>
-          <BookingSlots bookingSlotHandler={this.bookingSlotHandler} timeslots={datelib.parseForDisplay(this.state.timeslots)}/>
+          <BookingSlots bookingSlotHandler={this.bookingSlotHandler} timeslots={datelib.parseForDisplay(this.state.timeslots, this.state.isOpen)}/>
         </View>
         <View style={styles.buttonContainer}>
           { this.state.chosenSlot < 0
