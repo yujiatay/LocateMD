@@ -77,7 +77,7 @@ class SpinnerOverlay extends React.Component {
   render(){
     const loading = this.props.loading;
     return (
-      <Modal transparent={true} animationType={'none'} visible={loading} onRequestClose={()=>{alert('modal closed')}}>
+      <Modal transparent={true} animationType={'none'} visible={loading} onRequestClose={()=>{}}>
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'space-around',
           backgroundColor: '#00000040'}}>
           <View style={{backgroundColor: '#fff', height: 100, width: 100,
@@ -116,6 +116,10 @@ class Booking extends React.Component {
       this.popupDialog.show();
     }, 2500);
   };
+  _closeDialog = () => {
+    this.popupDialog.dismiss();
+    this.props.navigation.goBack();
+  };
   render() {
     const scaleAnimation = new ScaleAnimation();
     const clinic = this.props.navigation.state.params.clinic;
@@ -126,21 +130,21 @@ class Booking extends React.Component {
         <PopupDialog
           ref={(popupDialog) => { this.popupDialog = popupDialog; }}
           dialogAnimation={scaleAnimation}
-          dialogStyle={{elevation: 1, width: '80%', height: '30%' }}
-          containerStyle={{elevation: 10}}
+          dialogStyle={{width: '80%', borderRadius: 10}}
+          containerStyle={{elevation: 10, flex: 1, alignItems: 'center', flexDirection: 'column'}}
           actions={[
             <DialogButton text="DONE"
               textStyle={{fontFamily: 'Roboto_light'}}
-              onPress={() => {this.popupDialog.dismiss();}}
+              onPress={() => {this._closeDialog();}}
               key="done-button"
             />,
           ]}
         >
-          <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', borderRadius: 10}}>
             { this.state.bookingResult
               ? <SimpleLineIcons name="check" size={100} color="#00cd00"/>
               : <SimpleLineIcons name="close" size={100} color="#e50000"/>}
-            <Text style={{fontFamily: 'Roboto_light'}}>{this.state.bookingResult ? "SUCCESS" : "FAIL"}</Text>
+            <Text style={{fontFamily: 'Roboto_light'}}>{this.state.bookingResult ? "Booking was successful" : "Booking failed. Please try again."}</Text>
           </View>
         </PopupDialog>
         <View style={{flex: 2}}>
@@ -185,7 +189,7 @@ export default Booking;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   detailsContainer: {
     flex: 3,
