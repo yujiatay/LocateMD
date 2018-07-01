@@ -69,6 +69,9 @@ export const filterDaySlots = (daySlots, clinicBookingsObj) => {
     let clinicEstimate = clinicObj.nextEstimate;
 
     // Next 2 if statements transform the clinic estimate to a timestamp later than now
+    if (clinicEstimate == null || clinicEstimate == undefined) {
+      clinicEstimate = Date.now();
+    }
     if (clinicEstimate < 0) {
       clinicEstimate = -clinicEstimate;
     }
