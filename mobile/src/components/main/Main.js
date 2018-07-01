@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { MapView, Constants, Location, Permissions } from "expo";
 import { Marker } from 'react-native-maps';
 import { Item, Input, Icon, Card, List, ListItem } from 'native-base';
-import Swiper from 'react-native-swiper';
+import Swiper from '../../react-native-swiper/Swiper';
 import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 import ClinicInfo from './ClinicInfo';
@@ -28,6 +28,7 @@ class Main extends React.Component {
       clinicList: [],
       searchSuggestions: []
     };
+    this._animateMapToMarker = this._animateMapToMarker.bind(this);
   }
   componentDidMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -107,11 +108,19 @@ class Main extends React.Component {
   _clearSearchSuggestions = () => {
     this.setState({searchSuggestions: []});
   };
+  _animateMapToMarker = (index) => {
+    let markerCoord = {
+      latitude: this.state.clinicList[index].coords.lat,
+      longitude: this.state.clinicList[index].coords.lon
+    };
+    this._map.animateToCoordinate(markerCoord, 100);
+  };
   render() {
     return (
       // Overarching container
       <View style={styles.container}>
         <MapView
+          ref={(el) => this._map = el}
           style={{ position: "absolute", width: "100%", height: "100%"}}
           region={this.state.mapRegion}
           showsUserLocation={true}
@@ -163,7 +172,8 @@ class Main extends React.Component {
 
         </View>
         <View style={styles.swiper}>
-          <Swiper showsPagination={false} loop={false}>
+          <Swiper showsPagination={false} loop={false}
+            onIndexChanged={this._animateMapToMarker}>
             {
               this.state.clinicList.map((item, i) =>
                 <ClinicInfo
