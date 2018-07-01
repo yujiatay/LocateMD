@@ -117,7 +117,13 @@ export const bookAppointment = (timestamp, clinicID, authUser) => {
     startTime: timestamp,
     isBooking: true
   };
-  return appointmentRef.set(newAppointment);
+  return appointmentRef.set(newAppointment)
+  .then(() => {
+    return null;
+  })
+  .catch((error) => {
+    return error;
+  })
 };
 
 export const joinQueue = (clinicID, authUser) => {
@@ -134,9 +140,22 @@ export const joinQueue = (clinicID, authUser) => {
     if (error) {
       return {error: error, appointment: null};
     } else {
-      return appointmentRef.once('value').then((snapshot) => {
-        return {error: null, appointment: snapshot.val()};
-      })
+      return getAppointment(appointmentRef).then((appt) => {
+        return {error: null, appointment: appt};
+      });
     }
   });
 };
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function getAppointment(apptRef) {
+  let appt = await apptRef.once('value').then((snapshot) => snapshot.val());
+  while (!appt.hasOwnProperty('queueNum')) {
+    await sleep(1000);
+    appt = await apptRef.once('value').then((snapshot) => snapshot.val());
+  }
+  return appt
+}

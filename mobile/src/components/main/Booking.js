@@ -122,7 +122,7 @@ class Booking extends React.Component {
     let response = await database.bookAppointment(this.state.timeslots[this.state.chosenSlot],
       this.props.navigation.state.params.clinic.clinicID, this.props.authUser);
     setTimeout(() => {
-      this.setState({ loading: false, bookingResult: response === null ? false : true });
+      this.setState({ loading: false, bookingResult: response === null ? true : false });
       this.popupDialog.show();
     }, 2500);
   };
@@ -133,7 +133,7 @@ class Booking extends React.Component {
     setTimeout(() => {
       this.setState({
         loading: false,
-        bookingResult: response === null ? false : true,
+        bookingResult: response.error === null ? true : false,
         queueNumber: '' + response.appointment.queueNum,
         waitingTime: '' + waitingTime + ' min'
       });
