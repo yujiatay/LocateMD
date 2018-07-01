@@ -108,8 +108,8 @@ function resolveEstimatedTime(estimateMilliseconds) {
 
 
 
-export const bookAppointment = (timestamp, clinicID) => {
-  let patientID = auth.currentUser.uid;
+export const bookAppointment = (timestamp, clinicID, authUser) => {
+  let patientID = authUser.uid;
   let appointmentRef = database.ref('appointments').push();
   let newAppointment = {
     clinic: clinicID,
@@ -120,8 +120,8 @@ export const bookAppointment = (timestamp, clinicID) => {
   return appointmentRef.set(newAppointment);
 };
 
-export const joinQueue = (clinicID) => {
-  let patientID = auth.currentUser.uid;
+export const joinQueue = (clinicID, authUser) => {
+  let patientID = authUser.uid;
   let appointmentRef = database.ref('appointments').push();
   let newAppointment = {
     clinic: clinicID,
