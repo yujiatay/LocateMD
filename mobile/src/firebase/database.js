@@ -130,7 +130,7 @@ export const joinQueue = (clinicID) => {
     startTime: Date.now(),
     isBooking: false
   };
-  return appointmentRef.set(newAppointment, (error) => {
+  return appointmentRef.set(newAppointment).then((error) => {
     if (error) {
       return {error: error, appointment: null};
     } else {
