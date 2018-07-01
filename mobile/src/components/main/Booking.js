@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
-import { Card, CardItem, Text, Body } from 'native-base';
+import { StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
+import {connect} from 'react-redux';
+import { Card, CardItem, Body } from 'native-base';
 import { database } from '../../firebase';
 import * as datelib from '../../datelib';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -99,7 +100,9 @@ class Booking extends React.Component {
       isOpen: datelib.checkQueueOpening(this.props.navigation.state.params.clinic),
       chosenSlot: -1,
       loading: false,
-      bookingResult: ''
+      bookingResult: '',
+      queueNumber: '',
+      waitingTime: ''
     };
     this.bookingSlotHandler = this.bookingSlotHandler.bind(this);
   }
@@ -117,12 +120,27 @@ class Booking extends React.Component {
   _bookAppointment = async () => {
     this.setState({ loading : true });
     let response = await database.bookAppointment(this.state.timeslots[this.state.chosenSlot],
-      this.props.navigation.state.params.clinic.clinicID);
-      setTimeout(() => {
-        this.setState({ loading: false, bookingResult: response === null ? false : true });
-        this.popupDialog.show();
-      }, 2500);
-    };
+      this.props.navigation.state.params.clinic.clinicID, this.props.authUser);
+    setTimeout(() => {
+      this.setState({ loading: false, bookingResult: response === null ? false : true });
+      this.popupDialog.show();
+    }, 2500);
+  };
+  _joinQueue = async () => {
+    this.setState({ loading : true });
+    let response = await database.joinQueue(this.props.navigation.state.params.clinic.clinicID, this.props.authUser);
+    let waitingTime = Math.round((new Date(response.appointment.startTime) - new Date(Date.now())) / 60000);
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+        bookingResult: response === null ? false : true,
+        queueNumber: '' + response.appointment.queueNum,
+        waitingTime: '' + waitingTime + ' min'
+      });
+      this.popupDialog.show();
+    }, 2500);
+    throw response.appointment
+  };
   _closeDialog = () => {
     this.popupDialog.dismiss();
     this.props.navigation.goBack();
@@ -152,6 +170,8 @@ class Booking extends React.Component {
               ? <SimpleLineIcons name="check" size={100} color="#00cd00"/>
               : <SimpleLineIcons name="close" size={100} color="#e50000"/>}
             <Text style={{fontFamily: 'Roboto_light'}}>{this.state.bookingResult ? "Booking was successful" : "Booking failed. Please try again."}</Text>
+            {this.state.queueNumber.length > 0 && <Text style={{fontFamily: 'Roboto_light'}}>Your queue number is {this.state.queueNumber}</Text> }
+            {this.state.waitingTime.length > 0 && <Text style={{fontFamily: 'Roboto_light'}}>Estimated waiting time: {this.state.waitingTime}</Text> }
           </View>
         </PopupDialog>
         <View style={{flex: 2}}>
@@ -166,7 +186,7 @@ class Booking extends React.Component {
         <View style={styles.buttonContainer}>
           { this.state.chosenSlot < 0
           ? <Card style={styles.card}>
-              <CardItem button onPress={() => database.joinQueue(clinic.clinicID)} style={styles.cardItem}>
+              <CardItem button onPress={this._joinQueue} style={styles.cardItem}>
                 <Body style={styles.cardItem}>
                 <Text style={styles.cardText}>Queue now</Text>
                 </Body>
@@ -192,7 +212,11 @@ Booking.navigationOptions = ({navigation}) => ({
   headerTitle: navigation.state.params.clinic.clinicName,
 });
 
-export default Booking;
+const mapStateToProps = state => ({
+  authUser: state.sessionState.authUser
+});
+
+export default connect(mapStateToProps)(Booking);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
