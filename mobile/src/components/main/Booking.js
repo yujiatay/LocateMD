@@ -8,8 +8,8 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 const DetailItem = ({name, item}) => (
   <View>
-    <Text style={{ fontWeight: 'bold', fontFamily: 'Roboto_light' }}>{name}</Text>
-    <Text style={{ fontFamily: 'Roboto_light' }}>{item}</Text>
+    <Text style={{ fontWeight: 'bold', fontFamily: 'Roboto_light', fontSize: 14 }}>{name}</Text>
+    <Text style={{ fontFamily: 'Roboto_light', fontSize: 14 }}>{item}</Text>
   </View>
 );
 class Slot extends React.Component {
@@ -55,7 +55,7 @@ class BookingSlots extends React.Component {
   render() {
     return (
       <View>
-        <Text style={{ fontWeight: 'bold', fontFamily: 'Roboto_light' }}>Available slots</Text>
+        <Text style={{ fontWeight: 'bold', fontFamily: 'Roboto_light', fontSize: 14 }}>Available slots</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           {
             this.props.timeslots.map((time, i) =>
