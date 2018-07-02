@@ -19,6 +19,6 @@
 ### Orbital Links
 
 - [Milestone I](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-I)
-- Milestone II
+- [Milestone II](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-II)
 - Milestone III
 - [Project Log](https://github.com/yujiatay/LocateMD/wiki/Project-Log)
