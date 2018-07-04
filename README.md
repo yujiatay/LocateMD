@@ -16,9 +16,17 @@
   </a>
 </p>
 
-### Orbital Links
+## Prototype Preview
 
-- [Milestone I](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-I)
-- [Milestone II](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-II)
+<div>
+    <img src="https://raw.githubusercontent.com/yujiatay/LocateMD/master/docs/videos/search%20bar.gif" width="30%"/>
+    <img src="https://raw.githubusercontent.com/yujiatay/LocateMD/master/docs/videos/swiper.gif" width="30%"/>
+    <img src="https://raw.githubusercontent.com/yujiatay/LocateMD/master/docs/videos/booking.gif" width="30%"/>
+</div>
+
+### For more details, you can check out our progress reports in the links below.
+
 - Milestone III
+- [Milestone II: Prototyping](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-II)
+- [Milestone I: Ideation](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-I)
 - [Project Log](https://github.com/yujiatay/LocateMD/wiki/Project-Log)
