@@ -1,5 +1,5 @@
-.sign-up .ant-card {
-  max-width: 300px;
+.sign-up {
+  max-width: 70%;
   margin: 10% auto;
   border-radius: 5px;
 }
