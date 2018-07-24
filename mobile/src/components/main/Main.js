@@ -10,7 +10,6 @@ import withAuthorization from '../auth/withAuthorization';
 import { MapStyleDefault } from "./MapStyles";
 import ClinicInfo from './ClinicInfo';
 import { auth, database, firebase } from '../../firebase';
-// import Modal from "react-native-modal";
 
 class Main extends React.Component {
   constructor(props) {
@@ -23,6 +22,8 @@ class Main extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
+      userLocationLat: 1.3521,
+      userLocationLon: 103.8198,
       errorMessage: '',
       clinicsObj: {},
       clinicList: [],
@@ -48,7 +49,7 @@ class Main extends React.Component {
     this.clinicsRef.on("value", (snapshot) => {
       let newData = snapshot.val();
       this.setState({
-        clinicList: database.parseClinics(newData),
+        clinicList: database.parseClinics(newData, this.state.userLocationLat, this.state.userLocationLon),
         clinicsObj: newData
       });
     }, function(error) {
@@ -68,7 +69,9 @@ class Main extends React.Component {
         ...prevState.mapRegion,
         latitude: location.coords.latitude,
         longitude: location.coords.longitude
-      }
+      },
+      userLocationLat: location.coords.latitude,
+      userLocationLon: location.coords.longitude,
     }));
   };
   _handleMapRegionChange = mapRegion => {

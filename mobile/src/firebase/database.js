@@ -1,4 +1,5 @@
 import { database, auth } from './firebase';
+import { ONEMAP_TOKEN } from 'react-native-dotenv';
 
 // 3 hours
 const BOOKINGTHRESHOLD = 10800000;
@@ -57,16 +58,42 @@ export const getAppointments = (authUser) => {
   });
 };
 
-export const parseClinics = dataObj => {
+const getOneMapRouteURL = (userLatLon, clinicLatLon, routeType, token) => {
+    return `https://developers.onemap.sg/privateapi/routingsvc/route?` +
+      `start=${userLatLon}&` +
+      `end=${clinicLatLon}&` +
+      `routeType=${routeType}&` +
+      `token=${token}`
+};
+
+export const parseClinics = async (dataObj, userLat, userLon) => {
   if (dataObj != null) {
     return Object.keys(dataObj).map(i => {
       let srcClinic = dataObj[i];
-
       let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
+      const userLatLon = userLat + "," + userLon;
+      const clinicLatLon = srcClinic.coords.lat + "," + srcClinic.coords.lon;
+      // // WALK
+      // let response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "walk", ONEMAP_TOKEN))
+      // const walkTime = await response.json().route_summary.total_time;
+      // // CYCLE
+      // response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "cycle", ONEMAP_TOKEN))
+      // const cycleTime = await response.json().route_summary.total_time;
+      // // DRIVE
+      // response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "drive", ONEMAP_TOKEN))
+      // const driveTime = await response.json().route_summary.total_time;
+      // // PUBLIC TRANSPORT
+      // // response = await fetch(getOneMapRouteURL(userLatLOn, clinicLatLon, "pt", ONEMAP_TOKEN) +
+      // //   "&date=2017-02-03&time=07:35:00&mode=TRANSIT&maxWalkDistance=1000&numItineraries=3")
+      // const ptTime = "30"
 
       return {
         estimatedWaitTime: timeEstimateString,
         clinicID: i,
+        // walkTime: walkTime,
+        // cycleTime: cycleTime,
+        // driveTime: driveTime,
+        // ptTime: ptTime,
         ...dataObj[i]
       }
       // return {
@@ -86,7 +113,6 @@ export const parseClinics = dataObj => {
     return null;
   }
 };
-
 
 function resolveEstimatedTime(estimateMilliseconds) {
   if (estimateMilliseconds < 0) {
