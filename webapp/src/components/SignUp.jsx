@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Card, Form, Icon, Input, Button, message, Divider } from 'antd';
-import OpeningHoursList from './OpeningHoursFields';
+import OpeningHours from './OpeningHoursFields';
 
 import { auth } from '../firebase';
 import * as routes from '../constants/routes';
@@ -160,7 +160,7 @@ class SignUpForm extends Component {
         )}
       </FormItem>
       <Divider>Clinic Opening Hours</Divider>
-      <OpeningHoursList keys={[]} />
+      <OpeningHours form={this.props.form} keys={[]}/>
       <FormItem {...formItemLayout}>
         <Button type="primary" htmlType="submit" className="signup-form-button">
           Register

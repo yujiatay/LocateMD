@@ -1,0 +1,18 @@
+.dynamic-delete-button {
+    cursor: pointer;
+    position: relative;
+    top: 4px;
+    font-size: 24px;
+    color: #999;
+    transition: all .3s;
+    left: 10px;
+}
+.dynamic-delete-button:hover {
+    color: #777;
+}
+.to-icon {
+    position: relative;
+    top: 6px;
+    font-size: 24px;
+    color: #999;
+}
