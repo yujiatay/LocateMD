@@ -46,16 +46,17 @@ class SignUpForm extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { fullname, email, password } = values;
-        const { history } = this.props;
-        auth
-        .doCreateUserWithEmailAndPassword(email, password)
-        .then(authUser => {
-          history.push(routes.HOME);
-        })
-        .catch(error => {
-          message.error(error.message);
-        });
+        console.log(values)
+        // const { fullname, email, password } = values;
+        // const { history } = this.props;
+        // auth
+        // .doCreateUserWithEmailAndPassword(email, password)
+        // .then(authUser => {
+        //   history.push(routes.HOME);
+        // })
+        // .catch(error => {
+        //   message.error(error.message);
+        // });
       }
     });
   }
@@ -160,7 +161,13 @@ class SignUpForm extends Component {
         )}
       </FormItem>
       <Divider>Clinic Opening Hours</Divider>
-      <OpeningHours form={this.props.form} keys={[]}/>
+      <OpeningHours form={this.props.form} day={"mon"}/>
+      <OpeningHours form={this.props.form} day={"tue"}/>
+      <OpeningHours form={this.props.form} day={"wed"}/>
+      <OpeningHours form={this.props.form} day={"thu"}/>
+      <OpeningHours form={this.props.form} day={"fri"}/>
+      <OpeningHours form={this.props.form} day={"sat"}/>
+      <OpeningHours form={this.props.form} day={"sun"}/>
       <FormItem {...formItemLayout}>
         <Button type="primary" htmlType="submit" className="signup-form-button">
           Register

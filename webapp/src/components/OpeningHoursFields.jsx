@@ -1,4 +1,4 @@
-import { Form, TimePicker, DatePicker, Icon, Button, Row, Col } from 'antd';
+import { Form, TimePicker, Input, Icon, Button, Row, Col } from 'antd';
 import moment from 'moment'
 import React, { Component } from 'react';
 import './OpeningHoursFields.css';
@@ -16,6 +16,24 @@ class OpeningHours extends React.Component {
     }
   }
 
+  getDay= () => {
+    switch(this.props.day) {
+      case "mon":
+        return "Monday";
+      case "tue":
+        return "Tuesday";
+      case "wed":
+        return "Wednesday";
+      case "thu":
+        return "Thursday";
+      case "fri":
+        return "Friday";
+      case "sat":
+        return "Saturday";
+      case "sun":
+        return "Sunday";
+    }
+  }
   remove = (k) => {
     const { form } = this.props;
     // can use data-binding to get
@@ -42,31 +60,52 @@ class OpeningHours extends React.Component {
 
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
-
+    const formItemLabelledLayout = {
+      labelCol: {
+        span: 6
+      },
+      wrapperCol: {
+        span: 12
+      }
+    };
     const formItemLayoutWithOutLabel = {
       wrapperCol: {
         span: 12,
         offset: 6
       },
     };
-    const formItemLabelledLayout = {
+    const hoursLabelledLayout = {
       labelCol: {
         span: 6
       },
       wrapperCol: {
-        span: 3
+        span: 12
       }
+    };
+    const hoursUnlabelledLayout = {
+      wrapperCol: {
+        span: 12,
+        offset: 6
+      },
     };
     getFieldDecorator(this.state.keys, { initialValue: [] });
     const keys = getFieldValue(this.state.keys);
-    const formItems = keys.map((k, index) => {
+
+    const formItems = (keys.length === 0) ?
+      <FormItem
+        {...formItemLabelledLayout}
+        label={this.getDay()}
+        required={false}
+      >
+       <Input disabled={true} placeholder="Closed"/>
+      </FormItem>
+      : keys.map((k, index) => {
       return (
-        <Row type="flex" justify="center">
-        <Col span={18}>
-            <Col span={9}>
+        <Row type="flex" justify={"center"}>
+            <Col span={7}>
               <FormItem
-                {...formItemLabelledLayout}
-                label={index === 0 ? 'Passengers' : ''}
+                {...(index === 0 ? hoursLabelledLayout : hoursUnlabelledLayout)}
+                label={index === 0 ? this.getDay() : ''}
                 required={false}
                 key={k}
               >
@@ -86,8 +125,11 @@ class OpeningHours extends React.Component {
                     type="arrow-right"
               />
             </Col>
-            <Col span={3}>
+            <Col span={6}>
               <FormItem
+                wrapperCol={{
+                  span: 13
+                }}
                 required={false}
                 key={k}
               >
@@ -106,7 +148,6 @@ class OpeningHours extends React.Component {
                 />
               </FormItem>
             </Col>
-        </Col>
         </Row>
       );
     });
@@ -114,7 +155,7 @@ class OpeningHours extends React.Component {
       <div>
         {formItems}
         <FormItem {...formItemLayoutWithOutLabel}>
-          <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
+          <Button type="dashed" onClick={this.add} style={{ width: '60%' }}>
             <Icon type="plus" /> Add time slot
           </Button>
         </FormItem>
