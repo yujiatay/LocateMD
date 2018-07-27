@@ -47,16 +47,14 @@ class SignUpForm extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log(values)
-        // const { fullname, email, password } = values;
-        // const { history } = this.props;
-        // auth
-        // .doCreateUserWithEmailAndPassword(email, password)
-        // .then(authUser => {
-        //   history.push(routes.HOME);
-        // })
-        // .catch(error => {
-        //   message.error(error.message);
-        // });
+        auth
+        .doCreateClinicAccount(values)
+        .then(authUser => {
+          history.push(routes.HOME);
+        })
+        .catch(error => {
+          message.error(error.message);
+        });
       }
     });
   }

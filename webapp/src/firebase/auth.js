@@ -8,6 +8,13 @@ export const doCreateUserWithEmailAndPassword = (email, password) =>
     console.log(newUser.idToken);
   });
 
+export const doCreateClinicAccount = (form) =>
+ auth.createUserWithEmailAndPassword(form.email, form.password).then(function(newUser) {
+   console.log(newUser.user.uid);
+   database.updateInfo()
+   console.log(newUser.idToken);
+ });
+
 // Sign In
 export const doSignInWithEmailAndPassword = (email, password) =>
   auth.signInWithEmailAndPassword(email, password);
