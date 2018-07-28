@@ -33,6 +33,8 @@ const formItemLayout = {
   },
 }
 
+
+
 class SignUpForm extends Component {
   constructor(props) {
     super(props);
@@ -42,15 +44,55 @@ class SignUpForm extends Component {
     };
   }
 
+  formSlot = (keys, data) => {
+    let pad = (i) => {
+      return i < 10 ? "0" + i : i
+    };
+    return keys.map(key => {
+      return {
+        start: "" + pad(data[key].start.hour()) + pad(data[key].start.minute()),
+        end: "" + pad(data[key].end.hour()) + pad(data[key].end.minute()),
+      }
+    });
+  };
+
+  sanitiseForm = (form) => {
+    return {
+      contactNumber: form.cliniccontact,
+      email: form.email,
+      // password: form.password,
+      clinicName: form.clinicname,
+      address: {
+        blockNo: form.clinicblockno,
+        postalCode: parseInt(form.clinicpostalcode),
+        streetName: form.clinicstreetname
+      },
+      coords: {
+        lat: 1.36747901395741,
+        lon: 103.855967138976
+      },
+      openingHours: {
+        mon: this.formSlot(form.key_mon, form.slots_mon),
+        tue: this.formSlot(form.key_tue, form.slots_tue),
+        wed: this.formSlot(form.key_wed, form.slots_wed),
+        thu: this.formSlot(form.key_thu, form.slots_thu),
+        fri: this.formSlot(form.key_fri, form.slots_fri),
+        sat: this.formSlot(form.key_sat, form.slots_sat),
+        sun: this.formSlot(form.key_sun, form.slots_sun),
+      }
+    }
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log(values)
+        let sanitized_values = this.sanitiseForm(values);
+        console.log(sanitized_values);
         auth
-        .doCreateClinicAccount(values)
+        .doCreateClinicAccount(sanitized_values, values.password)
         .then(authUser => {
-          history.push(routes.HOME);
+          this.props.history.push(routes.HOME);
         })
         .catch(error => {
           message.error(error.message);

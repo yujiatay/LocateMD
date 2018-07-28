@@ -1,19 +1,29 @@
-import { database, auth } from './firebase';
+import {database, auth} from './firebase';
 
-export const updateInfo = (id, email, contactNumber = '') =>
-database.ref(`clinics/${id}`).set(
-  {
-    contactNumber: contactNumber,
-    email: email
-  },
-  function(error) {
+export const updateInfo = (id, email, contactNumber = '') => {
+  return database.ref(`clinics/${id}`).set(
+      {
+        contactNumber: contactNumber,
+        email: email
+      }).then(function (error) {
     if (error) {
       console.log(error);
     } else {
       console.log('CHANGED');
     }
-  }
-);
+  });
+}
+
+export const submitClinicForm = (id, form) => {
+  return database.ref(`clinics/${id}`).set(form)
+      .then(function (error) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('CHANGED');
+        }
+      });
+}
 
 // GETTING DATA
 
@@ -24,11 +34,11 @@ export const getInfo = id => {
   }
 
   database
-  .ref(`clinics/${id}`)
-  .once('value')
-  .then(function (snapshot) {
-    return snapshot.val();
-  });
+      .ref(`clinics/${id}`)
+      .once('value')
+      .then(function (snapshot) {
+        return snapshot.val();
+      });
 };
 
 export const parseAppointmentsForDisplay = data => {
@@ -38,13 +48,13 @@ export const parseAppointmentsForDisplay = data => {
       let dateTime = new Date(srcAppt.startTime);
       return {
         date:
-        ((dateTime.getDate() < 10) ? '0' : '') + dateTime.getDate() + "-" +
-        ((dateTime.getMonth() < 9) ? '0' : '') + (dateTime.getMonth() + 1) + "-" +
-        dateTime.getFullYear(),
+            ((dateTime.getDate() < 10) ? '0' : '') + dateTime.getDate() + "-" +
+            ((dateTime.getMonth() < 9) ? '0' : '') + (dateTime.getMonth() + 1) + "-" +
+            dateTime.getFullYear(),
         time:
-        ((dateTime.getHours() < 10) ? '0' : '') + dateTime.getHours() + ":" +
-        ((dateTime.getMinutes() < 10) ? '0' : '') + dateTime.getMinutes() + ":" +
-        ((dateTime.getSeconds() < 10) ? '0' : '') + dateTime.getSeconds(),
+            ((dateTime.getHours() < 10) ? '0' : '') + dateTime.getHours() + ":" +
+            ((dateTime.getMinutes() < 10) ? '0' : '') + dateTime.getMinutes() + ":" +
+            ((dateTime.getSeconds() < 10) ? '0' : '') + dateTime.getSeconds(),
         patient: srcAppt.patientName
       };
     });
@@ -72,7 +82,7 @@ export const addAppointment = (timestamp, patientID) => {
 export const joinQueue = (patientID) => {
   let clinicID = auth.currentUser.uid;
   let clinicApptRef = database.ref('appointmentsclinic/' + clinicID).push();
-  database.ref('clinics/' + clinicID).once('value').then(function(snapshot) {
+  database.ref('clinics/' + clinicID).once('value').then(function (snapshot) {
     let estimatedAppointmentTime = (snapshot.val() && snapshot.val().nextEstimate) || Date.now();
     estimatedAppointmentTime = (estimatedAppointmentTime < Date.now()) ? Date.now() : estimatedAppointmentTime;
     let newAppointment = {
@@ -104,7 +114,7 @@ export const addAppointmentGeneric = (timestamp, patientID) => {
 export const joinQueueGeneric = (patientID) => {
   let clinicID = auth.currentUser.uid;
   let clinicApptRef = database.ref('appointments').push();
-  database.ref('clinics/' + clinicID).once('value').then(function(snapshot) {
+  database.ref('clinics/' + clinicID).once('value').then(function (snapshot) {
     let estimatedAppointmentTime = (snapshot.val() && snapshot.val().nextEstimate) || Date.now();
     estimatedAppointmentTime = (estimatedAppointmentTime < Date.now()) ? Date.now() : estimatedAppointmentTime;
     let newAppointment = {

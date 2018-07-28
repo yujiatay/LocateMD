@@ -11,8 +11,7 @@ export const doCreateUserWithEmailAndPassword = (email, password) =>
 export const doCreateClinicAccount = (form) =>
  auth.createUserWithEmailAndPassword(form.email, form.password).then(function(newUser) {
    console.log(newUser.user.uid);
-   database.updateInfo()
-   console.log(newUser.idToken);
+   database.submitClinicForm(newUser.user.uid, form);
  });
 
 // Sign In
