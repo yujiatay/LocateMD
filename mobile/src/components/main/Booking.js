@@ -5,6 +5,25 @@ import { Card, CardItem, Body } from 'native-base';
 import { database } from '../../firebase';
 import * as datelib from '../../datelib';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import { Notifications } from 'expo';
+
+const localNotification = {
+  title: 'LocateMD',
+  body: '', // (string) — body text of the notification.
+  ios: { // (optional) (object) — notification configuration specific to iOS.
+    sound: true // (optional) (boolean) — if true, play a sound. Default: false.
+  },
+  android: // (optional) (object) — notification configuration specific to Android.
+    {
+      sound: true, // (optional) (boolean) — if true, play a sound. Default: false.
+      //icon (optional) (string) — URL of icon to display in notification drawer.
+      //color (optional) (string) — color of the notification icon in notification drawer.
+      priority: 'high', // (optional) (min | low | high | max) — android may present notifications according to the priority, for example a high priority notification will likely to be shown as a heads-up notification.
+      sticky: false, // (optional) (boolean) — if true, the notification will be sticky and not dismissable by user. The notification must be programmatically dismissed. Default: false.
+      vibrate: true // (optional) (boolean or array) — if true, vibrate the device. An array can be supplied to specify the vibration pattern, e.g. - [ 0, 500 ].
+      // link (optional) (string) — external link to open when notification is selected.
+    }
+};
 
 const DetailItem = ({name, item}) => (
   <View>
@@ -117,8 +136,17 @@ class Booking extends React.Component {
       });
     }
   }
+
   _bookAppointment = async () => {
     this.setState({ loading : true });
+    const schedulingOptions = {
+      // TODO: Uncomment to send local notif at actual time
+      // time: this.state.timeslots[this.state.chosenSlot],
+      time: (new Date()).getTime() + 1000, // (date or number) — A Date object representing when to fire the notification or a number in Unix epoch time. Example: (new Date()).getTime() + 1000 is one second from now.
+    };
+    let apptTime = datelib.parseForDisplay([this.state.timeslots[this.state.chosenSlot]], false)
+    localNotification.body = "You have an appointment at " + apptTime[0];
+    Notifications.scheduleLocalNotificationAsync(localNotification, schedulingOptions);
     let response = await database.bookAppointment(this.state.timeslots[this.state.chosenSlot],
       this.props.navigation.state.params.clinic.clinicID, this.props.authUser);
     setTimeout(() => {

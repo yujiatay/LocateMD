@@ -39,12 +39,21 @@ class Main extends React.Component {
     } else {
       this._getLocationAsync();
       this._getClinics();
+      this._allowNotifs();
     }
   }
   componentWillUnmount() {
     this.clinicsRef.off();
   }
-  _getClinics = () => {
+  _allowNotifs = async () => {
+    let { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to send notifications was denied',
+      });
+    }
+  }
+  _getClinics = async () => {
     // TODO: Store object using redux
     this.clinicsRef.on("value", (snapshot) => {
       let newData = snapshot.val();
