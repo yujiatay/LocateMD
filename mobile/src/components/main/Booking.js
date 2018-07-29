@@ -218,26 +218,20 @@ class Booking extends React.Component {
             ?
             <Card style={styles.card}>
                 <CardItem button onPress={this._joinQueue} style={styles.cardItem}>
-                  <Body style={styles.cardItem}>
                   <Text style={styles.cardText}>Queue now</Text>
-                  </Body>
                 </CardItem>
               </Card>
             :
             <Card style={styles.card}>
                 <CardItem style={styles.cardItem}>
-                  <Body style={styles.cardItem}>
-                  <Text style={styles.cardText}>Clinic queue is closed.</Text>
-                  </Body>
+                  <Text style={styles.cardText}>Clinic queue is closed</Text>
                 </CardItem>
               </Card>
           : <Card style={styles.card}>
               <CardItem button
                         onPress={this._bookAppointment}
                         style={styles.cardItem}>
-                <Body style={styles.cardItem}>
-                <Text style={styles.cardText}>Book in advance</Text>
-                </Body>
+                  <Text style={styles.cardText}>Book in advance</Text>
               </CardItem>
             </Card>
           }
