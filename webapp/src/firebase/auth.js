@@ -8,8 +8,8 @@ export const doCreateUserWithEmailAndPassword = (email, password) =>
     console.log(newUser.idToken);
   });
 
-export const doCreateClinicAccount = (form) =>
- auth.createUserWithEmailAndPassword(form.email, form.password).then(function(newUser) {
+export const doCreateClinicAccount = (form, password) =>
+ auth.createUserWithEmailAndPassword(form.email, password).then(function(newUser) {
    console.log(newUser.user.uid);
    database.submitClinicForm(newUser.user.uid, form);
  });
