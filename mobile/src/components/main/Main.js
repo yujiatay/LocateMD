@@ -39,6 +39,7 @@ class Main extends React.Component {
     } else {
       this._getLocationAsync();
       this._getClinics();
+      this._getTravelTimes();
       this._allowNotifs();
     }
   }
@@ -65,6 +66,12 @@ class Main extends React.Component {
       console.log(error);
     });
   };
+  _getTravelTimes = async () => {
+    let res = await database.getTravelTimes(this.state.clinicList, this.state.userLocationLat, this.state.userLocationLon)
+    this.setState({
+      clinicList: res,
+    })
+  }
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {

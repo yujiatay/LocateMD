@@ -66,34 +66,18 @@ const getOneMapRouteURL = (userLatLon, clinicLatLon, routeType, token) => {
       `token=${token}`
 };
 
-export const parseClinics = async (dataObj, userLat, userLon) => {
+export const parseClinics = (dataObj, userLat, userLon) => {
   if (dataObj != null) {
-    return Object.keys(dataObj).map(i => {
+    return Object.keys(dataObj).map((i) => {
       let srcClinic = dataObj[i];
       let timeEstimateString = resolveEstimatedTime(srcClinic.nextEstimate);
-      const userLatLon = userLat + "," + userLon;
-      const clinicLatLon = srcClinic.coords.lat + "," + srcClinic.coords.lon;
-      // // WALK
-      // let response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "walk", ONEMAP_TOKEN))
-      // const walkTime = await response.json().route_summary.total_time;
-      // // CYCLE
-      // response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "cycle", ONEMAP_TOKEN))
-      // const cycleTime = await response.json().route_summary.total_time;
-      // // DRIVE
-      // response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "drive", ONEMAP_TOKEN))
-      // const driveTime = await response.json().route_summary.total_time;
-      // // PUBLIC TRANSPORT
-      // // response = await fetch(getOneMapRouteURL(userLatLOn, clinicLatLon, "pt", ONEMAP_TOKEN) +
-      // //   "&date=2017-02-03&time=07:35:00&mode=TRANSIT&maxWalkDistance=1000&numItineraries=3")
-      // const ptTime = "30"
-
       return {
         estimatedWaitTime: timeEstimateString,
         clinicID: i,
-        // walkTime: walkTime,
-        // cycleTime: cycleTime,
-        // driveTime: driveTime,
-        // ptTime: ptTime,
+        walkTime: 15,
+        cycleTime: 10,
+        driveTime: 7,
+        ptTime: 10,
         ...dataObj[i]
       }
       // return {
@@ -113,6 +97,63 @@ export const parseClinics = async (dataObj, userLat, userLon) => {
     return null;
   }
 };
+
+export async function getTravelTimes(dataObj, userLat, userLon) {
+  console.log("generating travel times")
+  return Promise.all(Object.keys(dataObj).map((i) => {
+    console.log("inside")
+    let srcClinic = dataObj[i];
+    const userLatLon = userLat + "," + userLon;
+    const clinicLatLon = srcClinic.coords.lat + "," + srcClinic.coords.lon;
+    let walkTime, cycleTime, driveTime, ptTime;
+    console.log(getOneMapRouteURL(userLatLon, clinicLatLon, "walk", ONEMAP_TOKEN))
+    // WALK
+    fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "walk", ONEMAP_TOKEN))
+      .then((res) => {
+        console.log(res.json())
+        walkTime = res.json().route_summary.total_time;
+
+        fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "cycle", ONEMAP_TOKEN))
+          .then((res) => {
+            cycleTime = res.json().route_summary.total_time;
+
+            fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "drive", ONEMAP_TOKEN))
+              .then((res) => {
+                driveTime = res.json().route_summary.total_time;
+                ptTime = "30";
+                srcClinic.walkTime = walkTime;
+                srcClinic.driveTime = driveTime;
+                srcClinic.cycleTime = cycleTime;
+                srcClinic.ptTime = ptTime;
+                console.log(srcClinic)
+                return srcClinic
+              })
+          })
+      })
+    // const walkTime = response.json().route_summary.total_time;
+
+    // CYCLE
+    // response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "cycle", ONEMAP_TOKEN))
+    // const cycleTime = response.json().route_summary.total_time;
+    // // DRIVE
+    // response = await fetch(getOneMapRouteURL(userLatLon, clinicLatLon, "drive", ONEMAP_TOKEN))
+    // const driveTime = response.json().route_summary.total_time;
+    // PUBLIC TRANSPORT
+    // response = await fetch(getOneMapRouteURL(userLatLOn, clinicLatLon, "pt", ONEMAP_TOKEN) +
+    //   "&date=2017-02-03&time=07:35:00&mode=TRANSIT&maxWalkDistance=1000&numItineraries=3")
+    // const ptTime = "30";
+
+    // srcClinic.walkTime = walkTime;
+    // srcClinic.driveTime = driveTime;
+    // srcClinic.cycleTime = cycleTime;
+    // srcClinic.ptTime = ptTime;
+    // console.log(srcClinic)
+    // return srcClinic
+  })).then((res) => {
+    console.log("RESULT: " + res)
+    return res;
+  })
+}
 
 function resolveEstimatedTime(estimateMilliseconds) {
   if (estimateMilliseconds < 0) {

@@ -33,19 +33,19 @@ const ClinicInfo = ({clinic, navigation}) => {
         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
           <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="md-walk" size={30} color="#6f737a"/>
-            <Text style={[styles.text, {marginLeft: 5}]}>22 min</Text>
+            <Text style={[styles.text, {marginLeft: 5}]}>{clinic.walkTime} min</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="md-car" size={30} color="#6f737a"/>
-            <Text style={[styles.text, {marginLeft: 5}]}>10 min</Text>
+            <Text style={[styles.text, {marginLeft: 5}]}>{clinic.driveTime} min</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="md-bus" size={30} color="#6f737a"/>
-            <Text style={[styles.text, {marginLeft: 5}]}>16 min</Text>
+            <Text style={[styles.text, {marginLeft: 5}]}>{clinic.ptTime} min</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
             <Ionicons name="md-subway" size={30} color="#6f737a"/>
-            <Text style={[styles.text, {marginLeft: 5}]}>15 min</Text>
+            <Text style={[styles.text, {marginLeft: 5}]}>{clinic.ptTime} min</Text>
           </View>
         </View>
 
