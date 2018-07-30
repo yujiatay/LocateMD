@@ -26,7 +26,7 @@
 
 ### For more details, you can check out our progress reports in the links below.
 
-- Milestone III
+- [Milestone III](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-III)
 - [Milestone II: Prototyping](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-II)
 - [Milestone I: Ideation](https://github.com/yujiatay/LocateMD/wiki/Orbital-Milestone-I)
 - [Project Log](https://github.com/yujiatay/LocateMD/wiki/Project-Log)
